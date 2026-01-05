@@ -87,7 +87,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="min-h-screen bg-background">
-      <Navbar />
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link href="/" className="hover:text-primary transition-colors">
@@ -555,7 +554,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
         )}
       </div>
-      <Footer />
     </main>
   )
 }

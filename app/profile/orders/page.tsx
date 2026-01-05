@@ -39,7 +39,6 @@ const orders = [
 export default function OrdersPage() {
   return (
     <main className="min-h-screen bg-background">
-      <Navbar />
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-5xl mx-auto">
           <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">

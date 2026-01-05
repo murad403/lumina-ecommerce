@@ -71,7 +71,7 @@ export default function TrackOrderPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Navbar />
+
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-3xl mx-auto">
           <header className="mb-12 text-center">
@@ -195,7 +195,6 @@ export default function TrackOrderPage() {
           )}
         </div>
       </div>
-      <Footer />
     </main>
   )
 }

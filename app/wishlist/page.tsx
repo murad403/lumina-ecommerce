@@ -1,7 +1,4 @@
 "use client"
-
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { Heart } from "lucide-react"
@@ -13,7 +10,7 @@ export default function WishlistPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Navbar />
+
       <div className="container mx-auto px-4 pt-32 pb-24">
         <header className="mb-12 text-center">
           <div className="flex justify-center mb-6">
@@ -47,7 +44,6 @@ export default function WishlistPage() {
           </div>
         )}
       </div>
-      <Footer />
     </main>
   )
 }
