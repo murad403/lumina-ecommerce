@@ -209,7 +209,7 @@ export default function AdminProducts() {
                           </div>
                           <div>
                             <p className="font-medium text-foreground">{product.name}</p>
-                            <p className="text-sm text-muted-foreground line-clamp-1 max-w-[300px]">
+                            <p className="text-sm text-muted-foreground line-clamp-1 max-w-75">
                               {product.description}
                             </p>
                           </div>

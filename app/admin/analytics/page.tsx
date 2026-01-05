@@ -7,7 +7,7 @@ export default function AdminAnalytics() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+        <Card className="bg-linear-to-br from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-muted-foreground">Revenue (30d)</p>

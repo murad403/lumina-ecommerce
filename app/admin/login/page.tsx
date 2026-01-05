@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
 
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/5 blur-[120px] rounded-full -z-10" />
 
       <div className="w-full max-w-md bg-card/40 backdrop-blur-2xl p-12 rounded-[2.5rem] border border-white/5 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="text-center mb-12">

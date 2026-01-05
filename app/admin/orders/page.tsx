@@ -119,7 +119,7 @@ export default function AdminOrders() {
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-45">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -196,7 +196,7 @@ export default function AdminOrders() {
                         value={order.status}
                         onValueChange={(value) => handleStatusUpdate(order.id, value as Order["status"])}
                       >
-                        <SelectTrigger className="w-[140px]">
+                        <SelectTrigger className="w-35">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

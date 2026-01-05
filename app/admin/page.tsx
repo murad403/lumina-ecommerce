@@ -21,7 +21,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Quick Stats */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+        <Card className="bg-linear-to-br from-primary/10 to-primary/5 border-primary/20">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-primary" />
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
             <CardDescription>Monthly revenue for the past 6 months</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] flex items-end justify-between gap-2 px-4">
+            <div className="h-75 flex items-end justify-between gap-2 px-4">
               {[
                 { month: "Jan", amount: 32000, percent: 65 },
                 { month: "Feb", amount: 28000, percent: 55 },
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
               ].map((data) => (
                 <div key={data.month} className="flex-1 flex flex-col items-center gap-2">
                   <div className="w-full bg-primary/20 rounded-t-lg relative" style={{ height: `${data.percent}%` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary to-primary/50 rounded-t-lg" />
+                    <div className="absolute inset-0 bg-linear-to-t from-primary to-primary/50 rounded-t-lg" />
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-medium text-foreground">${(data.amount / 1000).toFixed(0)}K</p>
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                     >
                       {order.status}
                     </Badge>
-                    <p className="font-medium text-foreground min-w-[80px] text-right">{order.amount}</p>
+                    <p className="font-medium text-foreground min-w-20 text-right">{order.amount}</p>
                   </div>
                 </div>
               ))}
