@@ -26,21 +26,21 @@ const NewArrivals = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     <ProductCard
-                        id="lumina-desk-lamp"
+                        id={1}
                         name="Lumina Desk Lamp"
                         price="$185.00"
                         image="/luxury-minimalist-desk-lamp-modern-lighting.jpg"
                         tag="New"
                     />
                     <ProductCard
-                        id="minimal-leather-folio"
+                        id={2}
                         name="Minimal Leather Folio"
                         price="$120.00"
                         image="/minimalist-leather-folio-portfolio-black.jpg"
                         tag="Limited"
                     />
                     <ProductCard
-                        id="titanium-key-loop"
+                        id={3}
                         name="Titanium Key Loop"
                         price="$45.00"
                         image="/luxury-minimalist-titanium-keychain-modern.jpg"

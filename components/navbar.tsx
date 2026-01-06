@@ -70,7 +70,7 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href={isAuthenticated ? "/profile" : "/auth/sign-up"}
+              href={isAuthenticated ? "/profile" : "/auth/sign-up "}
               className={`p-2 ${isAuthenticated ? "text-primary" : "text-muted-foreground"} hover:text-foreground relative`}
             >
               <User className="w-5 h-5" />
@@ -99,7 +99,7 @@ export function Navbar() {
       </nav>
 
       {isSearchOpen && (
-        <div className="fixed inset-0 z-[100] bg-background flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
+        <div className="fixed inset-0 z-100 bg-background flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
           <button
             onClick={() => setIsSearchOpen(false)}
             className="absolute top-8 right-8 p-2 text-muted-foreground hover:text-foreground"

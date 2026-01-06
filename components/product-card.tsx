@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -12,14 +10,14 @@ import { products } from "@/lib/data"
 import { useToast } from "@/hooks/use-toast"
 
 interface ProductCardProps {
-  id?: string
+  id?: number
   name: string
   price: string
   image: string
   tag?: string
 }
 
-export function ProductCard({ id = "1", name, price, image, tag }: ProductCardProps) {
+export function ProductCard({ id = 1, name, price, image, tag }: ProductCardProps) {
   const { addItem, removeItem, isInWishlist } = useWishlist()
   const { toast } = useToast()
   const isWishlisted = isInWishlist(id)
@@ -39,12 +37,15 @@ export function ProductCard({ id = "1", name, price, image, tag }: ProductCardPr
     }
   }
 
+  
+
+
   return (
     <Link
       href={`/product/${id}`}
       className="block group relative bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all"
     >
-      <div className="aspect-[4/5] relative">
+      <div className="aspect-4/5 relative">
         <Image
           src={image || "/placeholder.svg"}
           alt={name}
@@ -64,9 +65,9 @@ export function ProductCard({ id = "1", name, price, image, tag }: ProductCardPr
       <div className="p-4 flex flex-col gap-2">
         <h3 className="font-medium text-lg leading-tight">{name}</h3>
         <p className="text-primary font-bold">{price}</p>
-        <Button className="w-full mt-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
+        {/* <Button onClick={handleAddToCart} className="w-full mt-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
           Quick Add
-        </Button>
+        </Button> */}
       </div>
     </Link>
   )

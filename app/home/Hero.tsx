@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
 
 const Hero = () => {
   return (
@@ -33,7 +32,7 @@ const Hero = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-12 py-7 rounded-full border-white/20 bg-transparent hover:bg-white/5 w-full md:w-auto"
+                className="text-lg px-12 py-7 rounded-full border-white/20 bg-transparent hover:bg-white/5 hover:text-white/70 w-full md:w-auto"
               >
                 Our Story
               </Button>

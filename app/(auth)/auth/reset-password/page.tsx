@@ -7,7 +7,6 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useState } from 'react'
 import z from 'zod'
 import { Input } from '@/components/ui/input'
-import { register } from 'module'
 
 type ResetPasswordInputs = z.infer<typeof resetPasswordValidation>
 

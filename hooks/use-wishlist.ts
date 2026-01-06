@@ -7,8 +7,8 @@ import type { Product } from "@/lib/data"
 interface WishlistStore {
   items: Product[]
   addItem: (product: Product) => void
-  removeItem: (id: string) => void
-  isInWishlist: (id: string) => boolean
+  removeItem: (id: number) => void
+  isInWishlist: (id: number) => boolean
 }
 
 export const useWishlist = create<WishlistStore>()(

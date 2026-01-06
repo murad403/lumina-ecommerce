@@ -1,15 +1,11 @@
 "use client"
-
 import type React from "react"
-
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Star, Plus, Minus, Heart, Check, Truck, Shield, RotateCcw, Package } from "lucide-react"
 import Link from "next/link"
 import { products } from "@/lib/data"
 import { useCart } from "@/hooks/use-cart"
-import { notFound } from "next/navigation"
+import { notFound, useParams } from "next/navigation"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useWishlist } from "@/hooks/use-wishlist"
@@ -20,8 +16,10 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === params.id)
+
+const Product = () => {
+  const {id} = useParams();
+  const product = products.find((p) => p.id == Number(id))
   if (!product) notFound()
 
   const [quantity, setQuantity] = useState(1)
@@ -215,7 +213,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="px-6 py-3 font-medium min-w-[3rem] text-center">{quantity}</span>
+                  <span className="px-6 py-3 font-medium min-w-12 text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
                     className="px-4 py-3 hover:bg-white/5 transition-colors"
@@ -245,7 +243,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
             <div className="grid grid-cols-2 gap-4 p-4 bg-card/30 rounded-lg border border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Truck className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -254,7 +252,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <RotateCcw className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -263,7 +261,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Shield className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -272,7 +270,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Check className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -313,23 +311,23 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   <h3 className="text-xl font-serif mb-6">Features</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">Premium materials and expert craftsmanship</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">Timeless minimalist design philosophy</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">Handcrafted with attention to every detail</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">Lifetime warranty and authenticity guarantee</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">Sustainable and ethically sourced materials</span>
                     </li>
                   </ul>
@@ -355,7 +353,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     </div>
                     <div className="flex justify-between py-3 border-b border-white/5">
                       <span className="text-muted-foreground">SKU</span>
-                      <span className="font-medium">{product.id.toUpperCase()}</span>
+                      <span className="font-medium">{product.id}</span>
                     </div>
                   </div>
                 </div>
@@ -557,3 +555,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     </main>
   )
 }
+
+
+export default Product;

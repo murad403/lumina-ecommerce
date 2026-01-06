@@ -17,38 +17,34 @@ const FeatureProducts = () => {
                         precision and timeless design.
                     </p>
                 </div>
-                <Link href="/shop">
-                    <Button
-                        variant="link"
-                        className="text-primary p-0 h-auto mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0"
-                    >
-                        View Collection <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                <Link href="/shop" className='flex items-center'>
+                    <span className='hover:underline underline-offset-4'>View Collection</span>
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <ProductCard
-                    id="ethereal-chronograph"
+                    id={1}
                     name="Ethereal Chronograph"
                     price="$299.00"
                     image="/luxury-gold-watch-minimalist-dark-background.jpg"
                     tag="Best Seller"
                 />
                 <ProductCard
-                    id="noir-leather-wallet"
+                    id={2}
                     name="Noir Leather Wallet"
                     price="$89.00"
                     image="/minimalist-black-leather-wallet-premium.jpg"
                 />
                 <ProductCard
-                    id="vertex-audio-pods"
+                    id={3}
                     name="Vertex Audio Pods"
                     price="$199.00"
                     image="/sleek-minimalist-wireless-earbuds-black.jpg"
                     tag="New Arrival"
                 />
-                <ProductCard id="onyx-carry-on" name="Onyx Carry-on" price="$450.00" image="/premium-matte-black-suitcase-luggage.jpg" />
+                <ProductCard id={4} name="Onyx Carry-on" price="$450.00" image="/premium-matte-black-suitcase-luggage.jpg" />
             </div>
         </section>
     )

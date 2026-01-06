@@ -8,7 +8,7 @@ export interface Review {
 }
 
 export interface Product {
-  id: string
+  id: number
   name: string
   price: number
   priceFormatted: string
@@ -24,7 +24,7 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: "ethereal-chronograph",
+    id: 1,
     name: "Ethereal Chronograph",
     price: 299,
     priceFormatted: "$299.00",
@@ -72,7 +72,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "noir-leather-wallet",
+    id: 2,
     name: "Noir Leather Wallet",
     price: 89,
     priceFormatted: "$89.00",
@@ -107,7 +107,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "vertex-audio-pods",
+    id: 3,
     name: "Vertex Audio Pods",
     price: 199,
     priceFormatted: "$199.00",
@@ -135,7 +135,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "onyx-carry-on",
+    id: 4,
     name: "Onyx Carry-on",
     price: 450,
     priceFormatted: "$450.00",
@@ -155,7 +155,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "lumina-desk-lamp",
+    id: 5,
     name: "Lumina Desk Lamp",
     price: 185,
     priceFormatted: "$185.00",
@@ -181,7 +181,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "minimal-leather-folio",
+    id: 6,
     name: "Minimal Leather Folio",
     price: 120,
     priceFormatted: "$120.00",
@@ -207,7 +207,7 @@ export const products: Product[] = [
     ],
   },
   {
-    id: "titanium-key-loop",
+    id: 7,
     name: "Titanium Key Loop",
     price: 45,
     priceFormatted: "$45.00",
