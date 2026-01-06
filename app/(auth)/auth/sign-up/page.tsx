@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,7 +29,7 @@ const SignUp = () => {
   }
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
+    <main className="bg-background flex flex-col">
       <div className="flex-1 flex items-center justify-center px-4 pt-24 pb-12 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/5 blur-[120px] rounded-full -z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000" />
 

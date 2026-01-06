@@ -3,10 +3,11 @@ import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Eye, EyeOff, Mail, Phone } from "lucide-react"
-import Link from "next/link"
+import { ArrowLeft, Mail, Phone } from "lucide-react"
+import { IoKeyOutline } from "react-icons/io5";
 import { Input } from "@/components/ui/input"
 import { ForgotPasswordValidation, signinValidation } from "@/validation/validation"
+import Link from "next/link"
 
 type ForgotPasswordInputs = z.infer<typeof ForgotPasswordValidation>
 
@@ -28,19 +29,24 @@ const ForgotPassword = () => {
   }
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
-
+    <main className=" bg-background flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12 relative overflow-hidden">
         <div className="flex w-full max-w-md">
-          <button
+          <Link  href={"/auth/sign-in"}
             className="mb-8 flex items-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-3 h-3 mr-2" /> Back to Identity
-          </button>
+          </Link>
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/5 blur-[120px] rounded-full -z-10" />
 
         <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-1000">
+
+          <div className="flex justify-center mb-6">
+            <div className="text-primary inline-block p-5 rounded-full bg-primary/20 animate-pulse">
+              <IoKeyOutline size={30}/>
+            </div>
+          </div>
 
           <div className="text-center mb-12 ">
             <span className="text-[10px] uppercase tracking-[0.5em] text-primary font-bold mb-4 italic border border-primary inline-block rounded-full p-2">
