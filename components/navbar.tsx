@@ -70,7 +70,7 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href={isAuthenticated ? "/profile" : "/auth"}
+              href={isAuthenticated ? "/profile" : "/auth/sign-up"}
               className={`p-2 ${isAuthenticated ? "text-primary" : "text-muted-foreground"} hover:text-foreground relative`}
             >
               <User className="w-5 h-5" />
