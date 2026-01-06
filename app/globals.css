@@ -7,7 +7,7 @@
   /* Updated color palette to a premium dark-themed aesthetic with gold accents */
   --background: oklch(0.12 0.01 20);
   --foreground: oklch(0.98 0.01 20);
-  --card: oklch(0.15 0.01 20);
+  --card: #141414;
   --card-foreground: oklch(0.98 0.01 20);
   --popover: oklch(0.15 0.01 20);
   --popover-foreground: oklch(0.98 0.01 20);
@@ -38,7 +38,7 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
+  --card: #141414;
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
