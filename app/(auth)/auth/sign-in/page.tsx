@@ -109,6 +109,15 @@ const SignIn = () => {
                 </div>
                 {errors.password && <p className="text-red-500 text-xs ml-1">{errors.password.message}</p>}
               </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit(onSubmit)}
+                className="w-full h-12 rounded-full font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                disabled={isLoading}
+              >
+                {isLoading ? "Processing..." : "Sign In"}
+              </button>
             </div>
 
             {/* Footer */}
