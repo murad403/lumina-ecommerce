@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Instagram, Facebook, Twitter, Youtube } from "lucide-react"
@@ -15,6 +13,7 @@ export function Footer() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
+    console.log(email)
     toast({
       title: "Success!",
       description: "You've been added to our exclusive list.",
