@@ -1,8 +1,5 @@
 "use client"
-
 import { Button } from "@/components/ui/button"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Search, MessageSquare } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -35,7 +32,7 @@ const faqs = [
   },
 ]
 
-function FAQContent() {
+const FAQPage =() => {
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredFaqs = faqs.filter(
@@ -110,14 +107,4 @@ function FAQContent() {
   )
 }
 
-export default function FAQPage() {
-  return (
-    <main className="min-h-screen bg-background">
-
-      <Suspense fallback={null}>
-        <FAQContent />
-      </Suspense>
-
-    </main>
-  )
-}
+export default FAQPage

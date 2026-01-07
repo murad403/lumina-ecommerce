@@ -22,10 +22,17 @@ export const ForgotPasswordValidation = z.object({
 
 
 export const verifyOtpValidation = z.object({
-    otp: z.string().length(6, "OTP must be 6 digits")
+  otp: z.string().length(6, "OTP must be 6 digits")
 })
 
 
 export const resetPasswordValidation = z.object({
   newPassword: z.string().min(6, "Password must be at least 6 characters"),
+})
+
+
+export const contactValidation = z.object({
+  first_name: z.string().min(1, "First name is required"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  message: z.string().min(1, "Message is required")
 })

@@ -1,25 +1,29 @@
 "use client"
-
-import type React from "react"
-
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Instagram, Facebook, Twitter, ArrowRight } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { contactValidation } from "@/validation/validation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { SubmitHandler, useForm } from "react-hook-form"
+import z from "zod"
 
-export default function ContactPage() {
+type ContactInputs = z.infer<typeof contactValidation>
+
+const ContactPage = () => {
+
+  const { register, handleSubmit, formState: { errors } } = useForm<ContactInputs>({
+    resolver: zodResolver(contactValidation)
+  })
   const { toast } = useToast()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    toast({
-      title: "Message Sent",
-      description: "Our concierge team will respond within 24 hours.",
-    })
+
+  const onSubmit: SubmitHandler<ContactInputs> = (data) => {
+    console.log(data)
   }
+
+
 
   return (
     <main className="min-h-screen bg-background">
@@ -27,6 +31,8 @@ export default function ContactPage() {
       <div className="pt-32 pb-24 container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-20 items-center">
+
+            {/* contact page details */}
             <div className="animate-in fade-in slide-in-from-left-8 duration-1000">
               <span className="text-xs uppercase tracking-[0.5em] text-primary font-bold mb-6 block">Concierge</span>
               <h1 className="text-6xl md:text-8xl font-serif mb-8 italic">
@@ -67,8 +73,9 @@ export default function ContactPage() {
               </div>
             </div>
 
+            {/* contact page form */}
             <div className="bg-card/50 p-10 md:p-16 rounded-[2.5rem] border border-white/5 backdrop-blur-xl animate-in fade-in slide-in-from-right-8 duration-1000">
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground ml-1">
@@ -77,8 +84,9 @@ export default function ContactPage() {
                     <Input
                       placeholder="John"
                       className="rounded-full bg-background/50 border-white/5 h-14 px-6 focus:border-primary transition-all"
-                      required
+                      {...register("first_name")}
                     />
+                    {errors.first_name && <p className="text-red-500 text-xs ml-1">{errors.first_name.message}</p>}
                   </div>
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground ml-1">
@@ -99,27 +107,34 @@ export default function ContactPage() {
                     type="email"
                     placeholder="john@example.com"
                     className="rounded-full bg-background/50 border-white/5 h-14 px-6 focus:border-primary transition-all"
-                    required
+                    {...register("email")}
                   />
+                  {errors.email && <p className="text-red-500 text-xs ml-1">{errors.email.message}</p>}
                 </div>
                 <div className="space-y-3">
                   <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-muted-foreground ml-1">
                     Your Message
                   </label>
                   <Textarea
+                    {...register("message")}
                     placeholder="Tell us about your requirements..."
                     className="min-h-45 rounded-4xl bg-background/50 border-white/5 p-6 focus:border-primary transition-all resize-none"
                     required
                   />
+                  {errors.message && <p className="text-red-500 text-xs ml-1">{errors.message.message}</p>}
                 </div>
-                <Button type="submit" className="w-full rounded-full py-8 text-lg group">
+                <Button onClick={handleSubmit(onSubmit)} type="submit" className="w-full rounded-full py-8 text-lg group">
                   Send Inquiry <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-              </form>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
     </main>
   )
 }
+
+
+export default ContactPage;

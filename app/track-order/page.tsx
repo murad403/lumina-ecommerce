@@ -18,8 +18,6 @@ export default function TrackOrderPage() {
   const handleTrack = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-
-    // Simulate API call
     setTimeout(() => {
       setTracking({
         orderNumber: orderNumber || "LMN-82937",
@@ -70,7 +68,7 @@ export default function TrackOrderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
 
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-3xl mx-auto">
@@ -82,6 +80,8 @@ export default function TrackOrderPage() {
           </header>
 
           {!tracking ? (
+
+            // Tracking Form
             <div className="bg-card/30 rounded-3xl p-8 md:p-12 border border-white/5">
               <form onSubmit={handleTrack} className="space-y-6">
                 <div className="space-y-2">
@@ -114,9 +114,11 @@ export default function TrackOrderPage() {
                 </Button>
               </form>
             </div>
+
           ) : (
+
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              {/* Order Status Card */}
+               {/* Tracking Details */}
               <div className="bg-card/30 rounded-3xl p-8 border border-white/5">
                 <div className="flex items-start justify-between mb-8">
                   <div>
@@ -146,11 +148,10 @@ export default function TrackOrderPage() {
                     <div key={index} className="flex gap-4">
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            item.completed
+                          className={`w-10 h-10 rounded-full flex items-center justify-center ${item.completed
                               ? "bg-primary text-primary-foreground"
                               : "bg-card border border-white/10 text-muted-foreground"
-                          }`}
+                            }`}
                         >
                           {item.completed ? (
                             <CheckCircle className="w-5 h-5" />
@@ -192,6 +193,7 @@ export default function TrackOrderPage() {
                 Track Another Order
               </Button>
             </div>
+            
           )}
         </div>
       </div>

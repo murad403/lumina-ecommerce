@@ -1,7 +1,6 @@
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 
-export default function TermsPage() {
+
+const TermsPage = () => {
   return (
     <main className="min-h-screen bg-background">
 
@@ -91,3 +90,6 @@ export default function TermsPage() {
     </main>
   )
 }
+
+
+export default TermsPage

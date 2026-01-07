@@ -1,6 +1,6 @@
 
 
-export default function StoryPage() {
+const StoryPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <div className="pt-32 pb-24 container mx-auto px-4">
@@ -61,3 +61,6 @@ export default function StoryPage() {
     </main>
   )
 }
+
+
+export default StoryPage;

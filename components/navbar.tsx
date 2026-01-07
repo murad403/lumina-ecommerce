@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import Link from "next/link"
 import { ShoppingCart, Menu, Search, User, Heart, X, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -98,6 +96,8 @@ export function Navbar() {
         </div>
       </nav>
 
+
+      {/* search option */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-100 bg-background flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
           <button
