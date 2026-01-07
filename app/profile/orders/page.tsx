@@ -1,6 +1,4 @@
 "use client"
-
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard, Eye } from "lucide-react"
 import Link from "next/link"
@@ -36,7 +34,7 @@ const orders = [
   },
 ]
 
-export default function OrdersPage() {
+const OrdersPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-32 pb-24">
@@ -147,3 +145,6 @@ export default function OrdersPage() {
     </main>
   )
 }
+
+
+export default OrdersPage;

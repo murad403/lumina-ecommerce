@@ -1,6 +1,4 @@
 "use client"
-
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard, Plus, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
@@ -11,10 +9,10 @@ export default function AddressesPage() {
   const { user, isAuthenticated, logout, deleteAddress, setDefaultAddress } = useAuth()
   const router = useRouter()
 
-  if (!isAuthenticated || !user) {
-    router.push("/auth")
-    return null
-  }
+  // if (!isAuthenticated || !user) {
+  //   router.push("/auth")
+  //   return null
+  // }
 
   const handleLogout = () => {
     logout()
@@ -98,7 +96,7 @@ export default function AddressesPage() {
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {user.addresses.map((address) => (
+                  {user?.addresses.map((address) => (
                     <div
                       key={address.id}
                       className="p-6 rounded-2xl bg-background/50 border border-white/5 relative group"

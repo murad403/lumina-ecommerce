@@ -10,6 +10,9 @@ import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import PersonalInformation from "./PersonalInformation"
+import ChangePassword from "./ChangePassword"
+import Notifications from "./Notification"
 
 export default function SettingsPage() {
   const { user, isAuthenticated, logout, updateUser } = useAuth()
@@ -19,10 +22,10 @@ export default function SettingsPage() {
   const [lastName, setLastName] = useState(user?.name.split(" ").slice(1).join(" ") || "")
   const [email, setEmail] = useState(user?.email || "")
 
-  if (!isAuthenticated || !user) {
-    router.push("/auth")
-    return null
-  }
+  // if (!isAuthenticated || !user) {
+  //   router.push("/auth")
+  //   return null
+  // }
 
   const handleLogout = () => {
     logout()
@@ -106,119 +109,17 @@ export default function SettingsPage() {
             </aside>
 
             <div className="lg:col-span-3 space-y-8">
-              <form onSubmit={handleSaveChanges} className="bg-card/30 rounded-3xl p-8 border border-white/5">
-                <div className="flex items-center gap-3 mb-8">
-                  <User className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-bold uppercase tracking-widest">Personal Information</h3>
-                </div>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                        First Name
-                      </label>
-                      <Input
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                        Last Name
-                      </label>
-                      <Input
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                      Email Address
-                    </label>
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                    />
-                  </div>
-                  <Button type="submit" className="rounded-full">
-                    Save Changes
-                  </Button>
-                </div>
-              </form>
+              {/* personal information */}
+              <PersonalInformation></PersonalInformation>
 
-              <div className="bg-card/30 rounded-3xl p-8 border border-white/5">
-                <div className="flex items-center gap-3 mb-8">
-                  <Lock className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-bold uppercase tracking-widest">Change Password</h3>
-                </div>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                      Current Password
-                    </label>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                      New Password
-                    </label>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                      Confirm New Password
-                    </label>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                    />
-                  </div>
-                  <Button className="rounded-full">Update Password</Button>
-                </div>
-              </div>
 
-              <div className="bg-card/30 rounded-3xl p-8 border border-white/5">
-                <div className="flex items-center gap-3 mb-8">
-                  <Bell className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-bold uppercase tracking-widest">Notifications</h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-2xl bg-background/50 border border-white/5">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Order Updates</p>
-                        <p className="text-xs text-muted-foreground">Receive email updates about your orders</p>
-                      </div>
-                    </div>
-                    <input type="checkbox" defaultChecked className="w-5 h-5 rounded accent-primary" />
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-2xl bg-background/50 border border-white/5">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Promotions & Offers</p>
-                        <p className="text-xs text-muted-foreground">Exclusive deals and new arrivals</p>
-                      </div>
-                    </div>
-                    <input type="checkbox" defaultChecked className="w-5 h-5 rounded accent-primary" />
-                  </div>
-                </div>
-              </div>
+              {/* change password */}
+              <ChangePassword></ChangePassword>
+
+              {/* notifications */}
+              <Notifications></Notifications>
+
+
             </div>
           </div>
         </div>

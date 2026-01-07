@@ -7,16 +7,16 @@ import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   const { user, isAuthenticated, logout } = useAuth()
   const router = useRouter()
 
-  if (!isAuthenticated || !user) {
-    router.push("/auth")
-    return null
-  }
+  // if (!isAuthenticated || !user) {
+  //   router.push("/auth/sign-in")
+  //   return null
+  // }
 
-  const defaultAddress = user.addresses.find((addr) => addr.isDefault)
+  const defaultAddress = user?.addresses.find((addr) => addr.isDefault)
 
   const handleLogout = () => {
     logout()
@@ -31,7 +31,7 @@ export default function ProfilePage() {
           <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-serif mb-2">My Account</h1>
-              <p className="text-muted-foreground">Welcome back, {user.name}</p>
+              <p className="text-muted-foreground">Welcome back, {user?.name}</p>
             </div>
             <Button
               onClick={handleLogout}
@@ -102,20 +102,20 @@ export default function ProfilePage() {
                       <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                         Full Name
                       </label>
-                      <p className="font-medium">{user.name}</p>
+                      <p className="font-medium">{user?.name}</p>
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                         Email Address
                       </label>
-                      <p className="font-medium">{user.email}</p>
+                      <p className="font-medium">{user?.email}</p>
                     </div>
-                    {user.phone && (
+                    {user?.phone && (
                       <div>
                         <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                           Phone Number
                         </label>
-                        <p className="font-medium">{user.phone}</p>
+                        <p className="font-medium">{user?.phone}</p>
                       </div>
                     )}
                   </div>
@@ -174,3 +174,6 @@ export default function ProfilePage() {
     </main>
   )
 }
+
+
+export default ProfilePage;
