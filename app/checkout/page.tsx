@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { ArrowLeft, ShieldCheck, Landmark, Smartphone, Truck, CheckCircle2, Edit2 } from "lucide-react"
 import Link from "next/link"
@@ -8,12 +7,14 @@ import { useState, useEffect } from "react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/hooks/use-cart"
 import { useAuth } from "@/hooks/use-auth"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 
 const PAYMENT_METHODS = [
   { id: "bkash", name: "bKash", icon: Smartphone, adminInfo: "bKash Merchant: 017XXXXXXXX" },
@@ -22,46 +23,79 @@ const PAYMENT_METHODS = [
   { id: "cod", name: "Cash on Delivery", icon: Truck, adminInfo: "Advance Shipping Payment Required" },
 ]
 
+const checkoutSchema = z.object({
+  contactType: z.enum(["email", "phone"]),
+  contactValue: z.string().min(1, "Contact information is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  postalCode: z.string().min(1, "Postal code is required"),
+  paymentMethod: z.enum(["bkash", "nagad", "bank", "cod"]),
+  transactionId: z.string().min(1, "Transaction ID is required"),
+  paidAmount: z.string().min(1, "Paid amount is required"),
+})
+
+type CheckoutFormData = z.infer<typeof checkoutSchema>
+
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart()
   const router = useRouter()
-  const [paymentMethod, setPaymentMethod] = useState("bkash")
-  const SHIPPING_COST = 60 // Standard shipping cost
+  const SHIPPING_COST = 60;
 
   const { user, isAuthenticated } = useAuth()
 
-  const [contactType, setContactType] = useState<"email" | "phone">("email")
-  const [contactValue, setContactValue] = useState("")
   const [isVerified, setIsVerified] = useState(false)
   const [showOtp, setShowOtp] = useState(false)
   const [otpValue, setOtpValue] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
 
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [address, setAddress] = useState("")
-  const [city, setCity] = useState("")
-  const [postalCode, setPostalCode] = useState("")
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      contactType: "email",
+      contactValue: "",
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      paymentMethod: "bkash",
+      transactionId: "",
+      paidAmount: "",
+    },
+  })
+
+  const contactType = watch("contactType")
+  const contactValue = watch("contactValue")
+  const paymentMethod = watch("paymentMethod")
 
   useEffect(() => {
     if (isAuthenticated && user) {
       const isEmail = user.email.includes("@")
-      setContactType(isEmail ? "email" : "phone")
-      setContactValue(isEmail ? user.email : user.phone || "")
+      setValue("contactType", isEmail ? "email" : "phone")
+      setValue("contactValue", isEmail ? user.email : user.phone || "")
       setIsVerified(true)
 
       const nameParts = user.name.split(" ")
-      setFirstName(nameParts[0] || "")
-      setLastName(nameParts.slice(1).join(" ") || "")
+      setValue("firstName", nameParts[0] || "")
+      setValue("lastName", nameParts.slice(1).join(" ") || "")
 
       const defaultAddress = user.addresses.find((addr) => addr.isDefault)
       if (defaultAddress) {
-        setAddress(defaultAddress.street)
-        setCity(defaultAddress.city)
-        setPostalCode(defaultAddress.zip)
+        setValue("address", defaultAddress.street)
+        setValue("city", defaultAddress.city)
+        setValue("postalCode", defaultAddress.zip)
       }
     }
-  }, [isAuthenticated, user])
+  }, [isAuthenticated, user, setValue])
 
   if (items.length === 0) {
     return (
@@ -78,8 +112,8 @@ export default function CheckoutPage() {
     )
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = (data: CheckoutFormData) => {
+    console.log("order confirmed", data)
     if (!isVerified) {
       alert("Please verify your contact information first.")
       return
@@ -111,9 +145,10 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-background">
-
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="max-w-6xl mx-auto">
+
+          {/* heading */}
           <header className="mb-12">
             <Link
               href="/cart"
@@ -129,7 +164,7 @@ export default function CheckoutPage() {
             )}
           </header>
 
-          <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             <div className="lg:col-span-2 space-y-12">
               <section>
                 <h3 className="text-lg font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
@@ -145,28 +180,31 @@ export default function CheckoutPage() {
                       <div className="flex bg-card/50 p-1 rounded-full border border-white/5 w-fit mb-2">
                         <button
                           type="button"
-                          onClick={() => setContactType("email")}
+                          onClick={() => setValue("contactType", "email")}
                           className={`px-6 py-1.5 rounded-full text-[10px] uppercase tracking-widest transition-all ${contactType === "email" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                         >
                           Email
                         </button>
                         <button
                           type="button"
-                          onClick={() => setContactType("phone")}
+                          onClick={() => setValue("contactType", "phone")}
                           className={`px-6 py-1.5 rounded-full text-[10px] uppercase tracking-widest transition-all ${contactType === "phone" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                         >
                           Phone
                         </button>
                       </div>
                       <div className="flex gap-3">
-                        <Input
-                          className="rounded-full bg-card border-white/10 px-6 h-12 flex-1"
-                          placeholder={contactType === "email" ? "email@example.com" : "017XXXXXXXX"}
-                          type={contactType === "email" ? "email" : "tel"}
-                          value={contactValue}
-                          onChange={(e) => setContactValue(e.target.value)}
-                          required
-                        />
+                        <div className="flex-1">
+                          <Input
+                            className="rounded-full bg-card border-white/10 px-6 h-12"
+                            placeholder={contactType === "email" ? "email@example.com" : "017XXXXXXXX"}
+                            type={contactType === "email" ? "email" : "tel"}
+                            {...register("contactValue")}
+                          />
+                          {errors.contactValue && (
+                            <p className="text-xs text-red-500 mt-1 ml-4">{errors.contactValue.message}</p>
+                          )}
+                        </div>
                         <Button
                           type="button"
                           onClick={handleSendOtp}
@@ -254,41 +292,56 @@ export default function CheckoutPage() {
                   )}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    className="rounded-full bg-card border-white/10 px-6 h-12"
-                    placeholder="First Name"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                  <Input
-                    className="rounded-full bg-card border-white/10 px-6 h-12"
-                    placeholder="Last Name"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                  <Input
-                    className="rounded-full bg-card border-white/10 px-6 h-12 md:col-span-2"
-                    placeholder="Address"
-                    required
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                  <Input
-                    className="rounded-full bg-card border-white/10 px-6 h-12"
-                    placeholder="City"
-                    required
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-                  <Input
-                    className="rounded-full bg-card border-white/10 px-6 h-12"
-                    placeholder="Postal Code"
-                    required
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                  />
+                  <div>
+                    <Input
+                      className="rounded-full bg-card border-white/10 px-6 h-12"
+                      placeholder="First Name"
+                      {...register("firstName")}
+                    />
+                    {errors.firstName && (
+                      <p className="text-xs text-red-500 mt-1 ml-4">{errors.firstName.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      className="rounded-full bg-card border-white/10 px-6 h-12"
+                      placeholder="Last Name"
+                      {...register("lastName")}
+                    />
+                    {errors.lastName && (
+                      <p className="text-xs text-red-500 mt-1 ml-4">{errors.lastName.message}</p>
+                    )}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Input
+                      className="rounded-full bg-card border-white/10 px-6 h-12"
+                      placeholder="Address"
+                      {...register("address")}
+                    />
+                    {errors.address && (
+                      <p className="text-xs text-red-500 mt-1 ml-4">{errors.address.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      className="rounded-full bg-card border-white/10 px-6 h-12"
+                      placeholder="City"
+                      {...register("city")}
+                    />
+                    {errors.city && (
+                      <p className="text-xs text-red-500 mt-1 ml-4">{errors.city.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      className="rounded-full bg-card border-white/10 px-6 h-12"
+                      placeholder="Postal Code"
+                      {...register("postalCode")}
+                    />
+                    {errors.postalCode && (
+                      <p className="text-xs text-red-500 mt-1 ml-4">{errors.postalCode.message}</p>
+                    )}
+                  </div>
                 </div>
               </section>
 
@@ -304,24 +357,30 @@ export default function CheckoutPage() {
                     <ShieldCheck className="w-4 h-4" /> Secure Manual Verification
                   </div>
 
-                  <RadioGroup
-                    value={paymentMethod}
-                    onValueChange={setPaymentMethod}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  >
-                    {PAYMENT_METHODS.map((method) => (
-                      <div key={method.id}>
-                        <RadioGroupItem value={method.id} id={method.id} className="peer sr-only" />
-                        <Label
-                          htmlFor={method.id}
-                          className="flex flex-col items-center justify-between rounded-xl border-2 border-white/5 bg-background/50 p-4 hover:bg-white/5 peer-data-[state=checked]:border-primary transition-all cursor-pointer"
-                        >
-                          <method.icon className="mb-3 h-6 w-6 text-muted-foreground peer-data-[state=checked]:text-primary" />
-                          <span className="text-xs font-bold uppercase tracking-tighter">{method.name}</span>
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+                  <Controller
+                    name="paymentMethod"
+                    control={control}
+                    render={({ field }) => (
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                      >
+                        {PAYMENT_METHODS.map((method) => (
+                          <div key={method.id}>
+                            <RadioGroupItem value={method.id} id={method.id} className="peer sr-only" />
+                            <Label
+                              htmlFor={method.id}
+                              className="flex flex-col items-center justify-between rounded-xl border-2 border-white/5 bg-background/50 p-4 hover:bg-white/5 peer-data-[state=checked]:border-primary transition-all cursor-pointer"
+                            >
+                              <method.icon className="mb-3 h-6 w-6 text-muted-foreground peer-data-[state=checked]:text-primary" />
+                              <span className="text-xs font-bold uppercase tracking-tighter">{method.name}</span>
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
 
                   <div className="bg-background/80 rounded-xl p-6 border border-white/5 animate-in fade-in slide-in-from-top-2 duration-300">
                     <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-primary italic">
@@ -345,8 +404,11 @@ export default function CheckoutPage() {
                           id="txid"
                           className="rounded-full bg-background border-white/10 h-11"
                           placeholder="TRX-XXXXXX"
-                          required
+                          {...register("transactionId")}
                         />
+                        {errors.transactionId && (
+                          <p className="text-xs text-red-500 mt-1 ml-4">{errors.transactionId.message}</p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="amount" className="text-[10px] uppercase tracking-widest">
@@ -356,8 +418,11 @@ export default function CheckoutPage() {
                           id="amount"
                           className="rounded-full bg-background border-white/10 h-11"
                           placeholder={paymentMethod === "cod" ? "৳60" : `৳${totalPrice() + SHIPPING_COST}`}
-                          required
+                          {...register("paidAmount")}
                         />
+                        {errors.paidAmount && (
+                          <p className="text-xs text-red-500 mt-1 ml-4">{errors.paidAmount.message}</p>
+                        )}
                       </div>
                     </div>
                   </div>

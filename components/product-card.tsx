@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 interface ProductCardProps {
   id?: number
   name: string
-  price: string
+  price: number
   image: string
   tag?: string
 }

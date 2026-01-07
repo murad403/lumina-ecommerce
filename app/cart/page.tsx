@@ -1,7 +1,4 @@
 "use client"
-
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Trash2, ArrowRight, ShoppingBag, User, Minus, Plus, Lock, Tag } from "lucide-react"
 import Link from "next/link"
@@ -13,10 +10,12 @@ import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 
-export default function CartPage() {
+const CartPage = () => {
   const { items, updateQuantity, removeItem, totalPrice } = useCart()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [promoCode, setPromoCode] = useState("")
+
+  // console.log(items)
 
   const cartItemsWithDetails = items.map((item) => ({
     ...item,
@@ -26,7 +25,7 @@ export default function CartPage() {
   const relatedProducts = products
     .filter((p) => {
       const cartCategories = cartItemsWithDetails.map((item) => item.product?.category)
-      return cartCategories.includes(p.category) && !items.some((item) => item.id === p.id)
+      return cartCategories.includes(p.category) && !items.some((item) => item.id == p.id)
     })
     .slice(0, 4)
 
@@ -37,7 +36,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-background flex flex-col">
+      <main className="bg-background flex flex-col">
 
         <div className="flex-1 flex flex-col items-center justify-center container mx-auto px-4 pt-32 pb-24">
           <div className="max-w-md text-center">
@@ -60,7 +59,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="container mx-auto px-4 pt-32 pb-24">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -110,20 +109,7 @@ export default function CartPage() {
                         </button>
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">{item.category}</p>
-                      {(item.options?.color || item.options?.size) && (
-                        <div className="flex gap-3 text-sm mb-3">
-                          {item.options?.color && (
-                            <span className="text-muted-foreground">
-                              Color: <span className="text-foreground">{item.options.color}</span>
-                            </span>
-                          )}
-                          {item.options?.size && (
-                            <span className="text-muted-foreground">
-                              Size: <span className="text-foreground">{item.options.size}</span>
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      
                     </div>
 
                     <div className="flex justify-between items-center mt-4">
@@ -134,7 +120,7 @@ export default function CartPage() {
                         >
                           <Minus className="w-4 h-4" />
                         </button>
-                        <span className="px-4 py-2 font-medium min-w-[2.5rem] text-center text-sm">
+                        <span className="px-4 py-2 font-medium min-w-10 text-center text-sm">
                           {item.quantity}
                         </span>
                         <button
@@ -217,7 +203,7 @@ export default function CartPage() {
                 <p className="text-xs text-center text-muted-foreground">Secure payment powered by SSL encryption</p>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border border-primary/20">
+              <div className="p-6 bg-linear-to-br from-primary/10 to-primary/5 rounded-lg border border-primary/20">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="w-5 h-5 text-primary" />
@@ -247,7 +233,7 @@ export default function CartPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
+                <ProductCard key={product.id} name={product?.name} price={product?.price}  image={product?.image} tag={product?.tag} />
               ))}
             </div>
           </div>
@@ -258,3 +244,5 @@ export default function CartPage() {
     </main>
   )
 }
+
+export default CartPage

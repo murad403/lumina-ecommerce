@@ -13,8 +13,8 @@ interface CartItem extends Product {
 interface CartStore {
   items: CartItem[]
   addItem: (product: Product, quantity?: number, options?: { color?: string; size?: string }) => void
-  removeItem: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => void
+  removeItem: (id: number) => void
+  updateQuantity: (id: number, quantity: number) => void
   clearCart: () => void
   totalItems: () => number
   totalPrice: () => number
@@ -58,7 +58,7 @@ export const useCart = create<CartStore>()(
       },
       updateQuantity: (id, quantity) => {
         set({
-          items: get().items.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item)),
+          items: get().items.map((item) => (item.id == id ? { ...item, quantity: Math.max(1, quantity) } : item)),
         })
       },
       clearCart: () => set({ items: [] }),
