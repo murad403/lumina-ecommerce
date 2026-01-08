@@ -16,6 +16,7 @@ export function Navbar() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated)
   const [mounted, setMounted] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
 
@@ -68,7 +69,7 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href={isAuthenticated ? "/profile" : "/auth/sign-up "}
+              href={isAuthenticated ? "/profile" : "/auth/sign-up"}
               className={`p-2 ${isAuthenticated ? "text-primary" : "text-muted-foreground"} hover:text-foreground relative`}
             >
               <User className="w-5 h-5" />
@@ -89,15 +90,70 @@ export function Navbar() {
                 Shop Now
               </Button>
             </Link>
-            <button className="md:hidden p-2">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-muted-foreground hover:text-foreground"
+            >
               <Menu className="w-6 h-6" />
             </button>
           </div>
         </div>
       </nav>
 
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-100 bg-background animate-in slide-in-from-right duration-300">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between p-4 border-b border-white/5">
+              <Link href="/" className="text-xl font-bold tracking-tighter" onClick={() => setIsMobileMenuOpen(false)}>
+                LUMINA<span className="text-primary text-2xl">.</span>
+              </Link>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
 
-      {/* search option */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <nav className="space-y-6">
+                <Link
+                  href="/shop"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-2xl font-medium hover:text-primary transition-colors"
+                >
+                  Collections
+                </Link>
+                <Link
+                  href="/best-sellers"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-2xl font-medium hover:text-primary transition-colors"
+                >
+                  Best Sellers
+                </Link>
+                <Link
+                  href="/story"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-2xl font-medium hover:text-primary transition-colors"
+                >
+                  Our Story
+                </Link>
+              </nav>
+            </div>
+
+            <div className="p-6 border-t border-white/5">
+              <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button size="lg" className="w-full rounded-full">
+                  Shop Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-100 bg-background flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
           <button
