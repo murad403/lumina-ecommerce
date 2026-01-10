@@ -437,7 +437,7 @@ export default function AdminProducts() {
                           placeholder="Price (optional)"
                           value={variant.price || ""}
                           onChange={(e) =>
-                            updateVariant(index, "price", Number.parseFloat(e.target.value) || undefined)
+                            updateVariant(index, "price", Number.parseFloat(e.target.value))
                           }
                         />
                         <Input
