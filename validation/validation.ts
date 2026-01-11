@@ -58,3 +58,16 @@ export const notificationsSchema = z.object({
     orderUpdates: z.boolean(),
     promotions: z.boolean(),
 })
+
+export const checkoutSchema = z.object({
+  contactType: z.enum(["email", "phone"]),
+  contactValue: z.string().min(1, "Contact information is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  postalCode: z.string().min(1, "Postal code is required"),
+  paymentMethod: z.enum(["bkash", "nagad", "bank", "cod"]),
+  transactionId: z.string().min(1, "Transaction ID is required"),
+  paidAmount: z.string().min(1, "Paid amount is required"),
+})

@@ -172,7 +172,7 @@ const BestSellers = () => {
                   key={product.id}
                   id={product.id}
                   name={product.name}
-                  price={product.priceFormatted}
+                  price={product.price}
                   image={product.image}
                   tag={product.tag}
                 />

@@ -55,7 +55,7 @@ const Product = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((p) => (
-                <ProductCard key={p.id} {...p} price={p.priceFormatted} />
+                <ProductCard key={p.id} {...p} price={p.price} />
               ))}
             </div>
           </div>

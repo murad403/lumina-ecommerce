@@ -85,14 +85,19 @@ export function Footer() {
                 New Arrivals
               </Link>
             </li>
+            <li>
+              <Link href="/story" className="hover:text-primary transition-colors">
+                Our Story
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-primary italic">Experience</h4>
           <ul className="space-y-4 text-sm text-muted-foreground font-medium">
             <li>
-              <Link href="/story" className="hover:text-primary transition-colors">
-                Our Story
+              <Link href="/track-order" className="hover:text-primary transition-colors">
+                Track Order
               </Link>
             </li>
             <li>
@@ -106,8 +111,13 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/track-order" className="hover:text-primary transition-colors">
-                Track Order
+              <Link href="/returns" className="hover:text-primary transition-colors">
+                Returns
+              </Link>
+            </li>
+            <li>
+              <Link href="/shipping" className="hover:text-primary transition-colors">
+                Shipping
               </Link>
             </li>
           </ul>

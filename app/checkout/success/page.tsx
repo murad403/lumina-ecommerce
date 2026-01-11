@@ -46,13 +46,15 @@ export default function SuccessPage() {
                 Continue Shopping
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-full px-12 py-6 w-full sm:w-auto border-white/10 bg-transparent"
-            >
-              Track Order <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
+            <Link href={"/track-order"}>
+              <Button
+                variant="outline"
+                size="lg"
+                className="rounded-full px-12 py-6 w-full sm:w-auto border-white/10 bg-transparent"
+              >
+                Track Order <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

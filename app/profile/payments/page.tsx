@@ -98,7 +98,7 @@ export default function PaymentsPage() {
                   {paymentMethods.map((method) => (
                     <div
                       key={method.id}
-                      className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 relative"
+                      className="p-6 rounded-2xl bg-linear-to-br from-primary/10 to-transparent border border-primary/20 relative"
                     >
                       {method.isDefault && (
                         <span className="absolute top-4 right-4 text-[10px] uppercase tracking-widest font-bold text-primary">

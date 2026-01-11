@@ -1,5 +1,4 @@
 "use client"
-import type React from "react"
 import { ArrowLeft, ShieldCheck, Landmark, Smartphone, Truck, CheckCircle2, Edit2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -15,6 +14,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { checkoutSchema } from "@/validation/validation"
 
 const PAYMENT_METHODS = [
   { id: "bkash", name: "bKash", icon: Smartphone, adminInfo: "bKash Merchant: 017XXXXXXXX" },
@@ -22,19 +22,6 @@ const PAYMENT_METHODS = [
   { id: "bank", name: "Bank Transfer", icon: Landmark, adminInfo: "City Bank: AC 1234567890" },
   { id: "cod", name: "Cash on Delivery", icon: Truck, adminInfo: "Advance Shipping Payment Required" },
 ]
-
-const checkoutSchema = z.object({
-  contactType: z.enum(["email", "phone"]),
-  contactValue: z.string().min(1, "Contact information is required"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  postalCode: z.string().min(1, "Postal code is required"),
-  paymentMethod: z.enum(["bkash", "nagad", "bank", "cod"]),
-  transactionId: z.string().min(1, "Transaction ID is required"),
-  paidAmount: z.string().min(1, "Paid amount is required"),
-})
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>
 
@@ -50,14 +37,7 @@ export default function CheckoutPage() {
   const [otpValue, setOtpValue] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    formState: { errors },
-  } = useForm<CheckoutFormData>({
+  const { register, handleSubmit, watch, setValue, control, formState: { errors }} = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       contactType: "email",
