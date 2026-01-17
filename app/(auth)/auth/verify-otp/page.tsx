@@ -7,12 +7,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { verifyOtpValidation } from '@/validation/validation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const { handleSubmit } = useForm<VerifyOtpInputs>({
         resolver: zodResolver(verifyOtpValidation)
@@ -26,15 +28,17 @@ const VerifyOtp = () => {
         }, 1500)
     }
 
+    
+
     return (
         <main className="bg-background flex flex-col">
             <div className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12 relative overflow-hidden">
                 <div className="flex w-full max-w-md">
-                    <Link href={"/auth/forgot-password"}
+                    <button onClick={() => router.back()}
                         className="mb-8 flex items-center uppercase text-[10px] tracking-widest text-muted-foreground hover:text-primary transition-colors"
                     >
                         <ArrowLeft className="w-3 h-3 mr-2" /> Previous Step
-                    </Link>
+                    </button>
                 </div>
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/5 blur-[120px] rounded-full -z-10" />
 

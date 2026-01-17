@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import MainWrapper from '@/components/wrapper/MainWrapper';
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -39,10 +40,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <Navbar></Navbar>
-        {children}
-        <Footer></Footer>
-        <Analytics />
+        <MainWrapper>
+          {children}
+        </MainWrapper>
       </body>
     </html>
   )

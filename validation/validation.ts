@@ -1,8 +1,8 @@
 import z from "zod";
 
 export const signupValidation = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  contact: z.string().min(1, "This field is required"),
+  full_name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Please confirm your password")
 }).refine((data) => data.password === data.confirmPassword, {
@@ -12,12 +12,12 @@ export const signupValidation = z.object({
 
 
 export const signinValidation = z.object({
-  contact: z.string().min(1, "This field is required"),
+  email: z.string().min(1, "This field is required"),
   password: z.string().min(6, "Password must be at least 6 characters")
 })
 
 export const ForgotPasswordValidation = z.object({
-  contact: z.string().min(1, "This field is required")
+  email: z.string().min(1, "This field is required")
 })
 
 

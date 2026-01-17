@@ -3,29 +3,46 @@ import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Eye, EyeOff, Mail, Phone } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { signupValidation } from "@/validation/validation"
 import Link from "next/link"
+import { useSignUpMutation } from "@/redux/features/auth/auth.api"
+import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
+import { useAppDispatch } from "@/redux/hooks"
+import { setSignUpUser } from "@/redux/features/auth/authSlice"
 
 type SignupInputs = z.infer<typeof signupValidation>
 
 const SignUp = () => {
-  const [authMethod, setAuthMethod] = useState<"email" | "phone">("email")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [signUp, {isLoading}] = useSignUpMutation();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignupInputs>({
-    resolver: zodResolver(signupValidation)
+    resolver: zodResolver(signupValidation),
+    defaultValues: {
+      full_name: "Md Murad",
+      email: "mdmurad.dev2004@gmail.com",
+      password: "123456",
+      confirmPassword: "123456"
+    }
   })
 
-  const onSubmit: SubmitHandler<SignupInputs> = (data) => {
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      console.log("Signup data:", data)
-    }, 1500)
+  const onSubmit: SubmitHandler<SignupInputs> = async(data) => {
+    // console.log(data)
+    try {
+      const result = await signUp(data).unwrap();
+      toast.success(result?.message);
+      dispatch(setSignUpUser(result?.data));
+      router.push("/auth/verify-otp");
+    } catch (error: any) {
+      console.log(error?.data)
+      toast.error(error?.data?.message);
+    }
   }
 
   return (
@@ -46,27 +63,6 @@ const SignUp = () => {
           </div>
 
           <div className="bg-card p-12 border-white/5 border rounded-[2.5rem] backdrop-blur-2xl">
-            {/* Email/Phone Toggle */}
-            <div className="flex gap-2 mb-8 p-1 bg-background rounded-full border border-white/10">
-              <button
-                onClick={() => setAuthMethod("email")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "email"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Mail className="w-3 h-3" /> Email
-              </button>
-              <button
-                onClick={() => setAuthMethod("phone")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "phone"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Phone className="w-3 h-3" /> Phone
-              </button>
-            </div>
 
             <div className="space-y-6">
               {/* Full Name */}
@@ -77,23 +73,23 @@ const SignUp = () => {
                 <Input
                   className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
                   placeholder="John Doe"
-                  {...register("name")}
+                  {...register("full_name")}
                 />
-                {errors.name && <p className="text-red-500 text-xs ml-1">{errors.name.message}</p>}
+                {errors.full_name && <p className="text-red-500 text-xs ml-1">{errors.full_name.message}</p>}
               </div>
 
-              {/* Email/Phone */}
+              {/* Email */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                  {authMethod === "email" ? "Email Address" : "Phone Number"}
+                  Email Address
                 </label>
                 <Input
                   className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                  placeholder={authMethod === "email" ? "name@example.com" : "+1 (555) 000-0000"}
-                  type={authMethod === "email" ? "email" : "tel"}
-                  {...register("contact")}
+                  placeholder="name@example.com"
+                  type="email"
+                  {...register("email")}
                 />
-                {errors.contact && <p className="text-red-500 text-xs ml-1">{errors.contact.message}</p>}
+                {errors.email && <p className="text-red-500 text-xs ml-1">{errors.email.message}</p>}
               </div>
 
               {/* Password */}

@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Eye, EyeOff, Mail, Phone } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { signinValidation } from "@/validation/validation"
 import { Input } from "@/components/ui/input"
@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input"
 type SigninInputs = z.infer<typeof signinValidation>
 
 const SignIn = () => {
-  const [authMethod, setAuthMethod] = useState<"email" | "phone">("phone")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -45,38 +44,17 @@ const SignIn = () => {
           </div>
 
           <div className="bg-card p-12 border-white/5 border rounded-[2.5rem] backdrop-blur-2xl">
-            {/* Email/Phone Toggle */}
-            <div className="flex gap-2 mb-8 p-1 bg-background rounded-full border border-white/10">
-              <button
-                onClick={() => setAuthMethod("email")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "email"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Mail className="w-3 h-3" /> Email
-              </button>
-              <button
-                onClick={() => setAuthMethod("phone")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "phone"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Phone className="w-3 h-3" /> Phone
-              </button>
-            </div>
 
             <div className="space-y-6">
-              {/* Email/Phone */}
+              {/* Email */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                  {authMethod === "email" ? "Email Address" : "Phone Number"}
+                  Email Address
                 </label>
                 <Input
                   className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                  placeholder={authMethod === "email" ? "name@example.com" : "+1 (555) 000-0000"}
-                  type={authMethod === "email" ? "email" : "tel"}
+                  placeholder="name@example.com"
+                  type="email"
                   {...register("contact")}
                 />
                 {errors.contact && <p className="text-red-500 text-xs ml-1">{errors.contact.message}</p>}
