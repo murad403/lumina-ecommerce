@@ -1,12 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type TInitialState = {
-    id: null | string;
-    user: string | null;
+    user: {
+        id: null | string;
+        user: {
+            email: string;
+            [key: string]: any;
+            } | null;
+    } | null;
 }
 
 const initialState: TInitialState = {
-    id: null,
     user: null
 }
 
@@ -14,11 +18,11 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        setSignUpUser: (state, action) =>{
+        setSignUpUser: (state, action) => {
             state.user = action.payload;
         }
     }
 })
 
-export const {setSignUpUser} = authSlice.actions;
+export const { setSignUpUser } = authSlice.actions;
 export default authSlice.reducer;

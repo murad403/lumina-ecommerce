@@ -5,6 +5,8 @@ import './globals.css'
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import MainWrapper from '@/components/wrapper/MainWrapper';
+import { getCurrentUser } from '@/utils/auth';
+import { AuthProvider } from '@/ContextProvider/AuthContext';
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -32,17 +34,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const { accessToken, refreshToken } = await getCurrentUser();
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <MainWrapper>
-          {children}
-        </MainWrapper>
+        <AuthProvider accessToken={accessToken} refreshToken={refreshToken}>
+          <MainWrapper>
+            {children}
+          </MainWrapper>
+        </AuthProvider>
       </body>
     </html>
   )

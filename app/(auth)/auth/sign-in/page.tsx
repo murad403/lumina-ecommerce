@@ -7,23 +7,35 @@ import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { signinValidation } from "@/validation/validation"
 import { Input } from "@/components/ui/input"
+import { useSignInMutation } from "@/redux/features/auth/auth.api"
+import { saveTokens } from "@/utils/auth"
+import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
 
 type SigninInputs = z.infer<typeof signinValidation>
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [signIn, { isLoading }] = useSignInMutation();
+  const router = useRouter();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SigninInputs>({
-    resolver: zodResolver(signinValidation)
+    resolver: zodResolver(signinValidation),
+    defaultValues: {
+      email: "mdmurad.dev2004@gmail.com",
+      password: "123456",
+    }
   })
 
-  const onSubmit: SubmitHandler<SigninInputs> = (data) => {
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      console.log("Signin data:", data)
-    }, 1500)
+  const onSubmit: SubmitHandler<SigninInputs> = async (data) => {
+    try {
+      const result = await signIn(data).unwrap();
+      await saveTokens(result?.access_token, result?.refresh_token);
+      toast.success(result?.message || "Signed in successfully");
+      router.push("/profile");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to sign in");
+    }
   }
 
   return (
@@ -55,9 +67,9 @@ const SignIn = () => {
                   className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
                   placeholder="name@example.com"
                   type="email"
-                  {...register("contact")}
+                  {...register("email")}
                 />
-                {errors.contact && <p className="text-red-500 text-xs ml-1">{errors.contact.message}</p>}
+                {errors.email && <p className="text-red-500 text-xs ml-1">{errors.email.message}</p>}
               </div>
 
               {/* Password */}

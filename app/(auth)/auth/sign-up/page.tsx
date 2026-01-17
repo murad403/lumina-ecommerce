@@ -18,8 +18,8 @@ type SignupInputs = z.infer<typeof signupValidation>
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [signUp, {isLoading}] = useSignUpMutation();
   const router = useRouter();
+  const [signUp, {isLoading}] = useSignUpMutation();
   const dispatch = useAppDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignupInputs>({
@@ -33,7 +33,6 @@ const SignUp = () => {
   })
 
   const onSubmit: SubmitHandler<SignupInputs> = async(data) => {
-    // console.log(data)
     try {
       const result = await signUp(data).unwrap();
       toast.success(result?.message);

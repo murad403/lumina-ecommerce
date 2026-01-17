@@ -8,17 +8,18 @@ import { useWishlist } from "@/hooks/use-wishlist"
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/ContextProvider/AuthContext"
 
 export function Navbar() {
   const totalItems = useCart((state) => state.totalItems())
   const wishlistItems = useWishlist((state) => state.items.length)
-  const isAuthenticated = useAuth((state) => state.isAuthenticated)
   const [mounted, setMounted] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
+  const {isAuth} = useAuth();
+  console.log(isAuth)
 
   useEffect(() => {
     setMounted(true)
@@ -69,11 +70,11 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href={isAuthenticated ? "/profile" : "/auth/sign-up"}
-              className={`p-2 ${isAuthenticated ? "text-primary" : "text-muted-foreground"} hover:text-foreground relative`}
+              href={isAuth ? "/profile" : "/auth/sign-in"}
+              className={`p-2 ${isAuth ? "text-primary" : "text-muted-foreground"} hover:text-foreground relative`}
             >
               <User className="w-5 h-5" />
-              {mounted && isAuthenticated && (
+              {mounted && isAuth && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
               )}
             </Link>

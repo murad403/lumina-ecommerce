@@ -6,8 +6,10 @@ import { Footer } from '../footer'
 import store from '@/redux/store'
 import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { getCurrentUser } from '@/utils/auth'
 
 const MainWrapper = ({ children }: { children: React.ReactNode }) => {
+    
     return (
         <Provider store={store}>
             <Navbar></Navbar>

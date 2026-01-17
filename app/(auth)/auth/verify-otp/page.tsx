@@ -8,27 +8,37 @@ import { z } from 'zod'
 import { verifyOtpValidation } from '@/validation/validation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAppSelector } from '@/redux/hooks'
+import { RootState } from '@/redux/store'
+import { useVerifyOtpMutation } from '@/redux/features/auth/auth.api'
+import { toast } from 'react-toastify'
 
 type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState("")
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const user = useAppSelector((state: RootState) => state.auth?.user?.user);
+    const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
 
-    const { handleSubmit } = useForm<VerifyOtpInputs>({
+    const { handleSubmit, setValue } = useForm<VerifyOtpInputs>({
         resolver: zodResolver(verifyOtpValidation)
     })
 
-    const onSubmit: SubmitHandler<VerifyOtpInputs> = (data) => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setIsLoading(false)
-            console.log("OTP data:", { otp })
-        }, 1500)
+    const handleOtpChange = (val: string) => {
+        setOtp(val)
+        setValue('otp', val)
     }
 
-    
+    const onSubmit: SubmitHandler<VerifyOtpInputs> = async (data) => {
+        try {
+            const result = await verifyOtp({ ...data, email: user?.email }).unwrap();
+            toast.success(result?.message || "OTP verified successfully!");
+            router.push('/auth/sign-in');
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Something went wrong. Please try again.");
+        }
+    }
 
     return (
         <main className="bg-background flex flex-col">
@@ -46,14 +56,19 @@ const VerifyOtp = () => {
                     <div className="text-center mb-12 ">
                         <h1 className="text-4xl font-serif italic mb-4">Verify Code</h1>
                         <p className="text-muted-foreground text-sm leading-relaxed px-6">
-                            Enter the 6-digit code sent to mdmurad@gmail.com
+                            Enter the 6-digit code sent to {user?.email || 'your email'}
                         </p>
                     </div>
 
                     <div className="bg-card p-12 border-white/5 border rounded-[2.5rem] backdrop-blur-2xl">
                         <div className="space-y-6">
                             <div className="flex flex-col items-center space-y-6">
-                                <InputOTP maxLength={6} value={otp} onChange={(val) => setOtp(val)} className="flex gap-6">
+                                <InputOTP
+                                    maxLength={6}
+                                    value={otp}
+                                    onChange={handleOtpChange}
+                                    className="flex gap-6"
+                                >
                                     <InputOTPGroup>
                                         <InputOTPSlot index={0} className="size-12 mr-4 rounded-lg border-white/10 bg-background" />
                                         <InputOTPSlot index={1} className="size-12 mr-4 rounded-lg border-white/10 bg-background" />
