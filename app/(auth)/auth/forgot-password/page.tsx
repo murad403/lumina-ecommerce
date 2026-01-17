@@ -3,36 +3,45 @@ import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ArrowLeft, Mail, Phone } from "lucide-react"
-import { IoKeyOutline } from "react-icons/io5";
+import { ArrowLeft } from "lucide-react"
+import { IoKeyOutline } from "react-icons/io5"
 import { Input } from "@/components/ui/input"
-import { ForgotPasswordValidation, signinValidation } from "@/validation/validation"
+import { ForgotPasswordValidation } from "@/validation/validation"
 import Link from "next/link"
+import { useForgotPasswordMutation } from "@/redux/features/auth/auth.api"
+import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
+import { useAppDispatch } from "@/redux/hooks"
+import { setSignUpUser } from "@/redux/features/auth/authSlice"
 
 type ForgotPasswordInputs = z.infer<typeof ForgotPasswordValidation>
 
 const ForgotPassword = () => {
-  const [authMethod, setAuthMethod] = useState<"email" | "phone">("phone")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [forgotPassword, {isLoading}] = useForgotPasswordMutation();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<ForgotPasswordInputs>({
     resolver: zodResolver(ForgotPasswordValidation)
   })
 
-  const onSubmit: SubmitHandler<ForgotPasswordInputs> = (data) => {
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      console.log("Signin data:", data)
-    }, 1500)
+  const onSubmit: SubmitHandler<ForgotPasswordInputs> = async(data) => {
+    try {
+      dispatch(setSignUpUser({ email: data.email, id: null }));
+      const result = await forgotPassword(data).unwrap();
+      toast.success(result?.message || "OTP sent to your email.");
+      router.push("/auth/reset-password-verify-otp");
+    } catch (error: any) {
+      // console.log(error);
+      toast.error(error?.data?.message || "Failed to send OTP. Please try again.");
+    }
   }
 
   return (
     <main className=" bg-background flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12 relative overflow-hidden">
         <div className="flex w-full max-w-md">
-          <Link  href={"/auth/sign-in"}
+          <Link href={"/auth/sign-in"}
             className="mb-8 flex items-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-3 h-3 mr-2" /> Back to Identity
@@ -44,7 +53,7 @@ const ForgotPassword = () => {
 
           <div className="flex justify-center mb-6">
             <div className="text-primary inline-block p-5 rounded-full bg-primary/20 animate-pulse">
-              <IoKeyOutline size={30}/>
+              <IoKeyOutline size={30} />
             </div>
           </div>
 
@@ -54,46 +63,25 @@ const ForgotPassword = () => {
             </span>
             <h1 className="text-4xl font-serif italic mb-4">Credentials</h1>
             <p className="text-muted-foreground text-sm leading-relaxed px-6">
-              Select your preferred method for identity restoration.
+              Enter your email to restore your identity.
             </p>
           </div>
 
           <div className="bg-card p-12 border-white/5 border rounded-[2.5rem] backdrop-blur-2xl">
-            {/* Email/Phone Toggle */}
-            <div className="flex gap-2 mb-8 p-1 bg-background rounded-full border border-white/10">
-              <button
-                onClick={() => setAuthMethod("email")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "email"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Mail className="w-3 h-3" /> Email
-              </button>
-              <button
-                onClick={() => setAuthMethod("phone")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-xs font-medium transition-all ${authMethod === "phone"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground bg-white/10"
-                  }`}
-              >
-                <Phone className="w-3 h-3" /> Phone
-              </button>
-            </div>
 
             <div className="space-y-6">
-              {/* Email/Phone */}
+              {/* Email */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                  {authMethod === "email" ? "Email Address" : "Phone Number"}
+                  Email Address
                 </label>
                 <Input
                   className="rounded-full bg-background border-white/10 px-6 h-12 focus:border-primary"
-                  placeholder={authMethod === "email" ? "name@example.com" : "+1 (555) 000-0000"}
-                  type={authMethod === "email" ? "email" : "tel"}
-                  {...register("contact")}
+                  placeholder="name@example.com"
+                  type="email"
+                  {...register("email")}
                 />
-                {errors.contact && <p className="text-red-500 text-xs ml-1">{errors.contact.message}</p>}
+                {errors.email && <p className="text-red-500 text-xs ml-1">{errors.email.message}</p>}
               </div>
 
               {/* Submit Button */}

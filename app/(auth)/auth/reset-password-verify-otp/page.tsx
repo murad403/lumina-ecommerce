@@ -6,20 +6,21 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { verifyOtpValidation } from '@/validation/validation'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAppSelector } from '@/redux/hooks'
-import { RootState } from '@/redux/store'
-import { useVerifyOtpMutation } from '@/redux/features/auth/auth.api'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useResetPasswordVerifyOtpMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'react-toastify'
+import { setSignUpUser } from '@/redux/features/auth/authSlice'
 
 type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 
-const VerifyOtp = () => {
+const ResetPasswordVerifyOtp = () => {
     const [otp, setOtp] = useState("")
     const router = useRouter();
-    const user = useAppSelector((state: RootState) => state.auth?.user?.user);
-    const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+    const user = useAppSelector((state: any) => state.auth?.user);
+
+    const [resetPasswordVerifyOtp, { isLoading }] = useResetPasswordVerifyOtpMutation();
+    const dispatch = useAppDispatch();
 
     const { handleSubmit, setValue } = useForm<VerifyOtpInputs>({
         resolver: zodResolver(verifyOtpValidation)
@@ -32,10 +33,12 @@ const VerifyOtp = () => {
 
     const onSubmit: SubmitHandler<VerifyOtpInputs> = async (data) => {
         try {
-            const result = await verifyOtp({ ...data, email: user?.email }).unwrap();
+            const result = await resetPasswordVerifyOtp({ ...data, email: user?.email }).unwrap();
             toast.success(result?.message || "OTP verified successfully!");
-            router.push('/auth/sign-in');
+            router.push('/auth/reset-password');
+            dispatch(setSignUpUser({ email: null, id: null }));
         } catch (error: any) {
+            // console.log(error)
             toast.error(error?.data?.message || "Something went wrong. Please try again.");
         }
     }
@@ -105,4 +108,4 @@ const VerifyOtp = () => {
     )
 }
 
-export default VerifyOtp
+export default ResetPasswordVerifyOtp;

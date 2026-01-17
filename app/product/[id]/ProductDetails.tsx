@@ -2,7 +2,6 @@
 import { Check, Heart, Minus, Package, Plus, RotateCcw, Shield, Star, Truck } from "lucide-react"
 import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
-import { toast } from "sonner"
 import { useWishlist } from "@/hooks/use-wishlist"
 import { useCart } from "@/hooks/use-cart"
 import { Button } from "@/components/ui/button"

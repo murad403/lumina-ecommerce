@@ -9,12 +9,12 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/hooks/use-cart"
-import { useAuth } from "@/hooks/use-auth"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { checkoutSchema } from "@/validation/validation"
+import { useAuth } from "@/ContextProvider/AuthContext"
 
 const PAYMENT_METHODS = [
   { id: "bkash", name: "bKash", icon: Smartphone, adminInfo: "bKash Merchant: 017XXXXXXXX" },
@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const SHIPPING_COST = 60;
 
-  const { user, isAuthenticated } = useAuth()
+  const { isAuth } = useAuth()
 
   const [isVerified, setIsVerified] = useState(false)
   const [showOtp, setShowOtp] = useState(false)
@@ -41,14 +41,14 @@ export default function CheckoutPage() {
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       contactType: "email",
-      contactValue: "",
-      firstName: "",
-      lastName: "",
-      address: "",
-      city: "",
-      postalCode: "",
+      contactValue: "demo@lumina.com",
+      firstName: "John",
+      lastName: "Doe",
+      address: "123 Fashion Street, Downtown",
+      city: "Dhaka",
+      postalCode: "1205",
       paymentMethod: "bkash",
-      transactionId: "",
+      transactionId: "TRX-DEMO123456",
       paidAmount: "",
     },
   })
@@ -58,7 +58,7 @@ export default function CheckoutPage() {
   const paymentMethod = watch("paymentMethod")
 
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuth && user) {
       const isEmail = user.email.includes("@")
       setValue("contactType", isEmail ? "email" : "phone")
       setValue("contactValue", isEmail ? user.email : user.phone || "")
@@ -137,7 +137,7 @@ export default function CheckoutPage() {
               <ArrowLeft className="mr-2 w-4 h-4" /> Return to Bag
             </Link>
             <h1 className="text-4xl font-serif">Checkout</h1>
-            {isAuthenticated && user && (
+            {isAuth && user && (
               <p className="text-sm text-muted-foreground mt-2">
                 Checking out as <span className="text-primary font-medium">{user.name}</span>
               </p>
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
                     2
                   </span>
                   Shipping Address
-                  {isAuthenticated && user?.addresses.find((a) => a.isDefault) && (
+                  {isAuth && user?.addresses.find((a) => a.isDefault) && (
                     <span className="text-[10px] text-primary font-normal ml-2">(Using saved address)</span>
                   )}
                 </h3>

@@ -2,13 +2,13 @@
 
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/ContextProvider/AuthContext"
 import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard } from "lucide-react"
 import Link from "next/link"
-import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 
 const ProfilePage = () => {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuth } = useAuth()
   const router = useRouter()
 
   // if (!isAuthenticated || !user) {
@@ -19,7 +19,6 @@ const ProfilePage = () => {
   const defaultAddress = user?.addresses.find((addr) => addr.isDefault)
 
   const handleLogout = () => {
-    logout()
     router.push("/")
   }
 

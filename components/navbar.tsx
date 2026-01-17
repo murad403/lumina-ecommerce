@@ -19,7 +19,7 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
   const {isAuth} = useAuth();
-  console.log(isAuth)
+  // console.log(isAuth)
 
   useEffect(() => {
     setMounted(true)

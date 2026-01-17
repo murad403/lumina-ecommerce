@@ -1,5 +1,4 @@
 import baseApi from "@/redux/api/baseApi";
-import { verify } from "crypto";
 
 
 const authApi = baseApi.injectEndpoints({
@@ -39,8 +38,26 @@ const authApi = baseApi.injectEndpoints({
                     body: data
                 }
             }
-        })
+        }),
+        forgotPassword: builder.mutation({
+            query: (data) =>{
+                return {
+                    url: "/password-reset/request/",
+                    method: "POST",
+                    body: data
+                }
+            }
+        }),
+        resetPasswordVerifyOtp: builder.mutation({
+            query: (data) =>{
+                return {
+                    url: "/reset/otp-verify/",
+                    method: "POST",
+                    body: data
+                }
+            }
+        }),
     })
 })
 
-export const {useSignUpMutation, useSignInMutation, useReGenerateOtpMutation, useVerifyOtpMutation} = authApi;
+export const {useSignUpMutation, useSignInMutation, useReGenerateOtpMutation, useForgotPasswordMutation, useVerifyOtpMutation, useResetPasswordVerifyOtpMutation} = authApi;

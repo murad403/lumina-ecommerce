@@ -37,9 +37,9 @@ const SignUp = () => {
       const result = await signUp(data).unwrap();
       toast.success(result?.message);
       dispatch(setSignUpUser(result?.data));
-      router.push("/auth/verify-otp");
+      router.push("/auth/user-verify-otp");
     } catch (error: any) {
-      console.log(error?.data)
+      // console.log(error?.data)
       toast.error(error?.data?.message);
     }
   }

@@ -4,14 +4,13 @@ import { Check, Star } from 'lucide-react'
 import { Separator } from "@/components/ui/separator"
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/hooks/use-auth'
-import { toast } from 'sonner'
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/ContextProvider/AuthContext'
 
 const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageRating: number }) => {
-    const { isAuthenticated, user } = useAuth();
+    const { isAuth } = useAuth();
     const [reviewRating, setReviewRating] = useState(5)
     const [reviewComment, setReviewComment] = useState("")
     const [reviewTitle, setReviewTitle] = useState("")
@@ -120,7 +119,7 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                                         ? "See what our customers are saying"
                                         : "Be the first to review this product"}
                                 </p>
-                                {!isAuthenticated && (
+                                {!isAuth && (
                                     <Link href="/auth/sign-in">
                                         <Button variant="outline" size="sm" className="rounded-full bg-transparent">
                                             Sign In to Write a Review
@@ -176,7 +175,7 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                         )}
 
                         {/* Write Review Form */}
-                        {isAuthenticated && (
+                        {isAuth && (
                             <div className="p-8 bg-card/30 rounded-lg border border-white/5">
                                 <h3 className="text-xl font-serif mb-6">Write a Review</h3>
                                 <form onSubmit={handleSubmitReview} className="space-y-6">
