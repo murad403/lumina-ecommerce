@@ -1,15 +1,14 @@
 "use client"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { ArrowLeft } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { verifyOtpValidation } from '@/validation/validation'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { RootState } from '@/redux/store'
-import { useVerifyOtpMutation } from '@/redux/features/auth/auth.api'
+import { useReGenerateOtpMutation, useVerifyOtpMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'react-toastify'
 import { setSignUpUser } from '@/redux/features/auth/authSlice'
 
@@ -17,10 +16,17 @@ type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState("")
+    const [mounted, setMounted] = useState(false)
     const router = useRouter();
-    const user = useAppSelector((state: RootState) => state.auth?.user?.user);
+    const user = useAppSelector((state: any) => state.auth?.user);
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
     const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
     const dispatch = useAppDispatch();
+    const [reGenerateOtp] = useReGenerateOtpMutation();
+    // console.log(user)
 
     const { handleSubmit, setValue } = useForm<VerifyOtpInputs>({
         resolver: zodResolver(verifyOtpValidation)
@@ -36,9 +42,18 @@ const VerifyOtp = () => {
             const result = await verifyOtp({ ...data, email: user?.email }).unwrap();
             toast.success(result?.message || "OTP verified successfully!");
             router.push('/auth/sign-in');
-            dispatch(setSignUpUser({user: null, id: null}));
+            dispatch(setSignUpUser({ user: null, id: null }));
         } catch (error: any) {
             toast.error(error?.data?.message || "Something went wrong. Please try again.");
+        }
+    }
+
+    const handleResendOtp = async () => {
+        try {
+            await reGenerateOtp({ email: user?.email }).unwrap();
+            toast.success("OTP has been resent to your email.");
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to resend OTP. Please try again.");
         }
     }
 
@@ -58,7 +73,7 @@ const VerifyOtp = () => {
                     <div className="text-center mb-12 ">
                         <h1 className="text-4xl font-serif italic mb-4">Verify Code</h1>
                         <p className="text-muted-foreground text-sm leading-relaxed px-6">
-                            Enter the 6-digit code sent to {user?.email || 'your email'}
+                            Enter the 6-digit code sent to {mounted && user?.email ? user.email : 'your email'}
                         </p>
                     </div>
 
@@ -85,7 +100,7 @@ const VerifyOtp = () => {
                                 </InputOTP>
                                 <p className="text-xs text-muted-foreground">
                                     Didn't receive the code?{" "}
-                                    <button type="button" className="text-primary hover:underline">
+                                    <button onClick={handleResendOtp} type="button" className="text-primary hover:underline">
                                         Resend
                                     </button>
                                 </p>

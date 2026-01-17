@@ -1,14 +1,14 @@
 "use client"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { ArrowLeft } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { verifyOtpValidation } from '@/validation/validation'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useResetPasswordVerifyOtpMutation } from '@/redux/features/auth/auth.api'
+import { useReGenerateOtpMutation, useResetPasswordVerifyOtpMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'react-toastify'
 import { setUserOtp } from '@/redux/features/auth/authSlice'
 
@@ -17,7 +17,14 @@ type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 const ResetPasswordVerifyOtp = () => {
     const [otp, setOtp] = useState("")
     const router = useRouter();
+    const [mounted, setMounted] = useState(false)
     const user = useAppSelector((state: any) => state.auth?.user);
+    const [reGenerateOtp] = useReGenerateOtpMutation();
+
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const [resetPasswordVerifyOtp, { isLoading }] = useResetPasswordVerifyOtpMutation();
     const dispatch = useAppDispatch();
@@ -42,6 +49,14 @@ const ResetPasswordVerifyOtp = () => {
             toast.error(error?.data?.message || "Something went wrong. Please try again.");
         }
     }
+    const handleResendOtp = async () => {
+        try {
+            await reGenerateOtp({ email: user?.email }).unwrap();
+            toast.success("OTP has been resent to your email.");
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to resend OTP. Please try again.");
+        }
+    }
 
     return (
         <main className="bg-background flex flex-col">
@@ -59,7 +74,7 @@ const ResetPasswordVerifyOtp = () => {
                     <div className="text-center mb-12 ">
                         <h1 className="text-4xl font-serif italic mb-4">Verify Code</h1>
                         <p className="text-muted-foreground text-sm leading-relaxed px-6">
-                            Enter the 6-digit code sent to {user?.email || 'your email'}
+                            Enter the 6-digit code sent to {mounted && user?.email ? user.email : 'your email'}
                         </p>
                     </div>
 
@@ -86,7 +101,7 @@ const ResetPasswordVerifyOtp = () => {
                                 </InputOTP>
                                 <p className="text-xs text-muted-foreground">
                                     Didn't receive the code?{" "}
-                                    <button type="button" className="text-primary hover:underline">
+                                    <button onClick={handleResendOtp} type="button" className="text-primary hover:underline">
                                         Resend
                                     </button>
                                 </p>
