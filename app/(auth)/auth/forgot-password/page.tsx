@@ -1,5 +1,4 @@
 "use client"
-import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -7,11 +6,10 @@ import { ArrowLeft } from "lucide-react"
 import { IoKeyOutline } from "react-icons/io5"
 import { Input } from "@/components/ui/input"
 import { ForgotPasswordValidation } from "@/validation/validation"
-import Link from "next/link"
 import { useForgotPasswordMutation } from "@/redux/features/auth/auth.api"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
-import { useAppDispatch } from "@/redux/hooks"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { setSignUpUser } from "@/redux/features/auth/authSlice"
 
 type ForgotPasswordInputs = z.infer<typeof ForgotPasswordValidation>
@@ -20,6 +18,7 @@ const ForgotPassword = () => {
   const [forgotPassword, {isLoading}] = useForgotPasswordMutation();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state: any) => state.auth?.user);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ForgotPasswordInputs>({
     resolver: zodResolver(ForgotPasswordValidation)
@@ -41,11 +40,12 @@ const ForgotPassword = () => {
     <main className=" bg-background flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12 relative overflow-hidden">
         <div className="flex w-full max-w-md">
-          <Link href={"/auth/sign-in"}
+          <button
             className="mb-8 flex items-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+            onClick={() => router.back()}
           >
             <ArrowLeft className="w-3 h-3 mr-2" /> Back to Identity
-          </Link>
+          </button>
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/5 blur-[120px] rounded-full -z-10" />
 

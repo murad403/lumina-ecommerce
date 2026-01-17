@@ -8,10 +8,12 @@ type TInitialState = {
             [key: string]: any;
             } | null;
     } | null;
+    otp: string | null;
 }
 
 const initialState: TInitialState = {
-    user: null
+    user: null,
+    otp: null,
 }
 
 const authSlice = createSlice({
@@ -20,9 +22,12 @@ const authSlice = createSlice({
     reducers: {
         setSignUpUser: (state, action) => {
             state.user = action.payload;
+        },
+        setUserOtp: (state, action) =>{
+            state.otp = action.payload;
         }
     }
 })
 
-export const { setSignUpUser } = authSlice.actions;
+export const { setSignUpUser, setUserOtp } = authSlice.actions;
 export default authSlice.reducer;

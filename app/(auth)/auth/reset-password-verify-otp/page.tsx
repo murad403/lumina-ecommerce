@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useResetPasswordVerifyOtpMutation } from '@/redux/features/auth/auth.api'
 import { toast } from 'react-toastify'
-import { setSignUpUser } from '@/redux/features/auth/authSlice'
+import { setUserOtp } from '@/redux/features/auth/authSlice'
 
 type VerifyOtpInputs = z.infer<typeof verifyOtpValidation>
 
@@ -33,10 +33,10 @@ const ResetPasswordVerifyOtp = () => {
 
     const onSubmit: SubmitHandler<VerifyOtpInputs> = async (data) => {
         try {
+            dispatch(setUserOtp(data));
             const result = await resetPasswordVerifyOtp({ ...data, email: user?.email }).unwrap();
             toast.success(result?.message || "OTP verified successfully!");
             router.push('/auth/reset-password');
-            dispatch(setSignUpUser({ email: null, id: null }));
         } catch (error: any) {
             // console.log(error)
             toast.error(error?.data?.message || "Something went wrong. Please try again.");
