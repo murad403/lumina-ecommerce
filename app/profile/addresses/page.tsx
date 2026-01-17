@@ -1,12 +1,12 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/ContextProvider/AuthContext"
 import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard, Plus, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 
 export default function AddressesPage() {
-  const { user, isAuthenticated, logout, deleteAddress, setDefaultAddress } = useAuth()
+  const { isAuth } = useAuth()
   const router = useRouter()
 
   // if (!isAuthenticated || !user) {
@@ -15,7 +15,6 @@ export default function AddressesPage() {
   // }
 
   const handleLogout = () => {
-    logout()
     router.push("/")
   }
 
