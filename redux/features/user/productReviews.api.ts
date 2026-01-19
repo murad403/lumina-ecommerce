@@ -8,7 +8,8 @@ const productReviewsApi = baseApi.injectEndpoints({
                     url: `/products/products/${slug}/reviews/`,
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["reviews"]
         }),
 
         addProductReview: builder.mutation({
@@ -18,7 +19,8 @@ const productReviewsApi = baseApi.injectEndpoints({
                     method: "POST",
                     body: data
                 }
-            }
+            },
+            invalidatesTags: ["reviews"]
         }),
 
         updateProductReview: builder.mutation({
@@ -27,7 +29,8 @@ const productReviewsApi = baseApi.injectEndpoints({
                     url: `/products/reviews/${id}/`,
                     method: "PUT"
                 }
-            }
+            },
+            invalidatesTags: ["reviews"]
         }),
 
 
@@ -37,7 +40,8 @@ const productReviewsApi = baseApi.injectEndpoints({
                     url: `/products/reviews/${id}/`,
                     method: "DELETE"
                 }
-            }
+            },
+            invalidatesTags: ["reviews"]
         }),
 
 

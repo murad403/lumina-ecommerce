@@ -116,3 +116,13 @@ export type TProductDetails = {
   created_at: string;
   updated_at?: string;
 }
+
+export type TReview = {
+  id: number;
+  user_name: string;
+  user_initial: string;
+  rating: number;
+  comment: string;
+  is_verified_purchase: boolean;
+  created_at: string;
+}

@@ -95,3 +95,9 @@ export const checkoutSchema = z.object({
   transactionId: z.string().min(1, "Transaction ID is required"),
   paidAmount: z.string().min(1, "Paid amount is required"),
 })
+
+
+export const reviewSchema = z.object({
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(10, "Review must be at least 10 characters").max(1000, "Review must be less than 1000 characters")
+})

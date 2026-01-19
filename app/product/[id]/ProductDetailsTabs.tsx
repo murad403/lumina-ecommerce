@@ -4,28 +4,40 @@ import { Check, Star } from 'lucide-react'
 import { Separator } from "@/components/ui/separator"
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/ContextProvider/AuthContext'
-import { TFeature, TProductDetails } from '@/types/all'
-import { useViewProductReviewsQuery } from '@/redux/features/user/productReviews.api'
+import { TFeature, TProductDetails, TReview } from '@/types/all'
 import { tabs, TTab } from '@/lib/data'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { reviewSchema } from '@/validation/validation'
+import { useAddProductReviewMutation, useViewProductReviewsQuery } from '@/redux/features/user/productReviews.api'
+import { toast } from 'react-toastify'
+
+type ReviewFormData = z.infer<typeof reviewSchema>
 
 const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
 
-    const { data } = useViewProductReviewsQuery(product?.slug, { skip: !product?.slug });
-    console.log(data)
+    const {data} = useViewProductReviewsQuery(product?.slug, {skip: !product?.slug});
+    const [addProductReview, {isLoading}] = useAddProductReviewMutation();
     const { isAuth } = useAuth();
-    const [reviewRating, setReviewRating] = useState(5)
-    const [reviewComment, setReviewComment] = useState("")
-    const [reviewTitle, setReviewTitle] = useState("")
+    
+    const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<ReviewFormData>({
+        resolver: zodResolver(reviewSchema),
+        defaultValues: { rating: 5, comment: "" }
+    })
 
-    const handleSubmitReview = (e: React.FormEvent) => {
-        e.preventDefault()
-        setReviewRating(5)
-        setReviewComment("")
-        setReviewTitle("")
+    const currentRating = watch("rating");
+
+    const onSubmit = async(data: ReviewFormData) => {
+        try {
+            const result = await addProductReview({slug: product?.slug, data}).unwrap();
+            toast.success("Review submitted successfully!");
+            reset();
+        } catch (error) {
+            toast.error("Failed to submit review. Please try again.");
+        }
     }
     return (
         <div className="mx-auto mb-24">
@@ -87,18 +99,19 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                     </div>
                 </TabsContent>
 
-                {/* <TabsContent value="reviews" className="mt-0">
+                <TabsContent value="reviews" className="mt-0">
                     <div className="max-w-4xl">
                         <div className="flex items-center gap-8 mb-12 p-8 bg-card/30 rounded-lg border border-white/5">
                             <div className="text-center">
-                                <div className="text-5xl font-bold mb-2">{product?.average_rating.toFixed(1)}</div>
+                                <div className="text-5xl font-bold mb-2">{product?.average_rating?.toFixed(1) || "0.0"}</div>
                                 <div className="flex items-center gap-4">
                                     <div className="flex gap-1">
-                                        {
-                                            [...Array(product?.average_rating || 5)].map((_, i) => (
-                                                <Star key={i} className={`w-4 h-4 fill-current text-primary`} />
-                                            ))
-                                        }
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star 
+                                                key={star} 
+                                                className={`w-4 h-4 ${star <= Math.round(product?.average_rating || 0) ? 'fill-current text-primary' : 'text-muted-foreground'}`} 
+                                            />
+                                        ))}
                                     </div>
                                     <span className="text-sm text-muted-foreground">
                                         ({product?.review_count || 0} reviews)
@@ -108,7 +121,7 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                             <Separator orientation="vertical" className="h-20" />
                             <div className="flex-1">
                                 <p className="text-muted-foreground mb-4">
-                                    {product.review_count > 0
+                                    {product?.review_count > 0
                                         ? "See what our customers are saying"
                                         : "Be the first to review this product"}
                                 </p>
@@ -122,20 +135,20 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                             </div>
                         </div>
 
-                        {product?.review_count > 0 && (
+                        {data?.count > 0 && (
                             <div className="space-y-6 mb-12">
-                                {product?.reviews.map((review: any) => (
+                                {data?.results?.map((review: TReview) => (
                                     <div key={review.id} className="p-6 bg-card/30 rounded-lg border border-white/5">
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-2">
                                                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium">
-                                                        {review.author.charAt(0)}
+                                                        {review.user_initial}
                                                     </div>
                                                     <div>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-medium">{review.author}</span>
-                                                            {review.verified && (
+                                                            <span className="font-medium">{review.user_name}</span>
+                                                            {review.is_verified_purchase && (
                                                                 <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
                                                                     Verified
                                                                 </span>
@@ -153,14 +166,14 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                                                 </div>
                                             </div>
                                             <span className="text-sm text-muted-foreground">
-                                                {new Date(review.date).toLocaleDateString("en-US", {
+                                                {new Date(review.created_at).toLocaleDateString("en-US", {
                                                     month: "short",
                                                     day: "numeric",
                                                     year: "numeric",
                                                 })}
                                             </span>
                                         </div>
-                                        <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
+                                        <p className="text-muted-foreground leading-relaxed">{review?.comment}</p>
                                     </div>
                                 ))}
                             </div>
@@ -169,7 +182,7 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                         {isAuth && (
                             <div className="p-8 bg-card/30 rounded-lg border border-white/5">
                                 <h3 className="text-xl font-serif mb-6">Write a Review</h3>
-                                <form onSubmit={handleSubmitReview} className="space-y-6">
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                                     <div>
                                         <label className="block text-sm font-medium mb-3">Your Rating</label>
                                         <div className="flex gap-2">
@@ -177,30 +190,19 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                                                 <button
                                                     key={rating}
                                                     type="button"
-                                                    onClick={() => setReviewRating(rating)}
+                                                    onClick={() => setValue("rating", rating)}
                                                     className="transition-transform hover:scale-110"
                                                 >
                                                     <Star
-                                                        className={`w-8 h-8 ${rating <= reviewRating ? "fill-primary text-primary" : "text-muted-foreground"
+                                                        className={`w-8 h-8 ${rating <= currentRating ? "fill-primary text-primary" : "text-muted-foreground"
                                                             }`}
                                                     />
                                                 </button>
                                             ))}
                                         </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="review-title" className="block text-sm font-medium mb-2">
-                                            Review Title
-                                        </label>
-                                        <Input
-                                            id="review-title"
-                                            value={reviewTitle}
-                                            onChange={(e) => setReviewTitle(e.target.value)}
-                                            placeholder="Sum up your experience"
-                                            required
-                                            className="bg-background/50"
-                                        />
+                                        {errors.rating && (
+                                            <p className="text-sm text-destructive mt-2">{errors.rating.message}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -209,13 +211,14 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                                         </label>
                                         <Textarea
                                             id="review-comment"
-                                            value={reviewComment}
-                                            onChange={(e) => setReviewComment(e.target.value)}
+                                            {...register("comment")}
                                             placeholder="Tell us what you think about this product..."
                                             rows={5}
-                                            required
                                             className="bg-background/50"
                                         />
+                                        {errors.comment && (
+                                            <p className="text-sm text-destructive mt-2">{errors.comment.message}</p>
+                                        )}
                                     </div>
 
                                     <Button type="submit" size="lg" className="rounded-lg">
@@ -225,9 +228,9 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                             </div>
                         )}
                     </div>
-                </TabsContent> */}
+                </TabsContent>
 
-                {/* <TabsContent value="shipping" className="mt-0">
+                <TabsContent value="shipping" className="mt-0">
                     <div className="grid md:grid-cols-2 gap-12">
                         <div>
                             <h3 className="text-xl font-serif mb-6">Shipping Information</h3>
@@ -261,7 +264,7 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
                             </div>
                         </div>
                     </div>
-                </TabsContent> */}
+                </TabsContent>
             </Tabs>
         </div>
     )

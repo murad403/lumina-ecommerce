@@ -66,8 +66,8 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                     <div className="flex items-center gap-4">
                         <div className="flex gap-1">
                             {
-                                [...Array(product?.average_rating || 5)].map((_, i) => (
-                                    <Star key={i} className={`w-4 h-4 fill-current text-primary`} />
+                                [...Array(5)].map((_, i) => (
+                                    <Star key={i} className={`w-4 h-4 ${i < Math.round(product?.average_rating || 0) ? "fill-current text-primary" : "text-muted-foreground"} `} />
                                 ))
                             }
                         </div>
