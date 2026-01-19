@@ -5,10 +5,12 @@ import { ProductCard } from "@/components/product-card"
 import ProductDetailsTabs from "./ProductDetailsTabs"
 import ProductDetails from "./ProductDetails"
 import { useProductDetailsQuery } from "@/redux/features/user/product.api"
+import { Skeleton } from "@/components/ui/skeleton"
+import { AlertCircle } from "lucide-react"
 
 const Product = () => {
   const { id } = useParams();
-  const {data, isLoading} = useProductDetailsQuery(id, {skip: !id});
+  const {data, isLoading, isError} = useProductDetailsQuery(id, {skip: !id});
   console.log(data)
 
   return (
@@ -25,11 +27,56 @@ const Product = () => {
             Shop
           </Link>
           <span>/</span>
-          <span className="text-foreground">{data?.name}</span>
+          {isLoading ? (
+            <Skeleton className="h-4 w-32" />
+          ) : (
+            <span className="text-foreground">{data?.title || data?.name || id}</span>
+          )}
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-24">
+            <div className="space-y-4">
+              <Skeleton className="aspect-square w-full rounded-2xl" />
+              <div className="grid grid-cols-4 gap-3">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="aspect-square rounded-lg" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <Skeleton className="h-12 w-3/4" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-8 w-1/4" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-14 w-full" />
+            </div>
+          </div>
+        )}
+
+        {/* Error or Not Found State */}
+        {(isError || (!isLoading && !data)) && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <AlertCircle className="w-16 h-16 text-destructive mb-4" />
+            <h3 className="text-2xl font-semibold mb-2">Product Not Found</h3>
+            <p className="text-muted-foreground max-w-md mb-6">
+              Sorry, we couldn't find the product you're looking for. It may have been removed or the link may be incorrect.
+            </p>
+            <Link 
+              href="/shop" 
+              className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Back to Shop
+            </Link>
+          </div>
+        )}
+
         {/* product details */}
-        <ProductDetails product={data}></ProductDetails>
+        {!isLoading && !isError && data && (
+          <ProductDetails product={data}></ProductDetails>
+        )}
 
         {/* product details tabs */}
         {/* <ProductDetailsTabs product={product}  averageRating={averageRating}/> */}
