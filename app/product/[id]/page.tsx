@@ -7,11 +7,12 @@ import ProductDetails from "./ProductDetails"
 import { useProductDetailsQuery } from "@/redux/features/user/product.api"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AlertCircle } from "lucide-react"
+import { TProduct } from "@/types/all"
 
 const Product = () => {
   const { id } = useParams();
-  const {data, isLoading, isError} = useProductDetailsQuery(id, {skip: !id});
-  // console.log(data)
+  const { data, isLoading, isError } = useProductDetailsQuery(id, { skip: !id });
+  // console.log(data?.related_products)
 
   return (
     <main className="min-h-screen bg-background">
@@ -64,8 +65,8 @@ const Product = () => {
             <p className="text-muted-foreground max-w-md mb-6">
               Sorry, we couldn't find the product you're looking for. It may have been removed or the link may be incorrect.
             </p>
-            <Link 
-              href="/shop" 
+            <Link
+              href="/shop"
               className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
               Back to Shop
@@ -74,35 +75,35 @@ const Product = () => {
         )}
 
         {/* product details */}
-         {!isLoading && !isError && data && (
+        {!isLoading && !isError && data && (
           <ProductDetails product={data}></ProductDetails>
         )}
 
 
 
         {/* product details tabs */}
-        <ProductDetailsTabs product={data}/>
+        <ProductDetailsTabs product={data} />
 
 
 
 
 
-        {/* Related Products */}
-        {/* {relatedProducts.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-serif">You May Also Like</h2>
-              <Link href="/shop" className="text-primary hover:underline text-sm">
-                View All Products
-              </Link>
+        {
+          data?.related_products?.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl font-serif">You May Also Like</h2>
+                <Link href="/shop" className="text-primary hover:underline text-sm">
+                  View All Products
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {data?.related_products.map((product: TProduct, index: number) => (
+                  <ProductCard key={index} product={product} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((p) => (
-                <ProductCard key={p.id} {...p} price={p.price} />
-              ))}
-            </div>
-          </div>
-        )} */}
+          )}
       </div>
     </main>
   )

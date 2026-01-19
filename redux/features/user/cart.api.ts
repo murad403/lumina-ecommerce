@@ -8,25 +8,31 @@ const cartApi = baseApi.injectEndpoints({
                     url: `/products/cart/`,
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["cart"]
         }),
+
         addToCart: builder.mutation({
-            query: (id) =>{
+            query: (data) =>{
                 return {
                     url: `/products/cart/`,
-                    method: "POST"
+                    method: "POST",
+                    body: data
                 }
-            }
+            },
+            invalidatesTags: ["cart"]
         }),
 
         updateCart: builder.mutation({
             query: ({id, data}) =>{
+                console.log(id, data)
                 return {
                     url: `/products/cart/items/${id}/`,
                     method: "PATCH",
                     body: data
                 }
-            }
+            },
+            invalidatesTags: ["cart"]
         }),
 
 
@@ -36,7 +42,8 @@ const cartApi = baseApi.injectEndpoints({
                     url: `/products/cart/items/${id}/`,
                     method: "DELETE"
                 }
-            }
+            },
+            invalidatesTags: ["cart"]
         }),
 
 

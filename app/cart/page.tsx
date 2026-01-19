@@ -9,35 +9,26 @@ import { AuthDialog } from "@/components/auth-dialog"
 import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
+import { useGetCartQuery, useUpdateCartMutation } from "@/redux/features/user/cart.api"
+import { TCartProduct } from "@/types/cart"
 
 const CartPage = () => {
+  const { data } = useGetCartQuery(undefined);
+  const [updateCart] = useUpdateCartMutation();
+
   const { items, updateQuantity, removeItem, totalPrice } = useCart()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
-  const [promoCode, setPromoCode] = useState("")
+  const [promoCode, setPromoCode] = useState("");
 
-  // console.log(items)
-
-  const cartItemsWithDetails = items.map((item) => ({
-    ...item,
-    product: products.find((p) => p.id === item.id),
-  }))
-
-  const relatedProducts = products
-    .filter((p) => {
-      const cartCategories = cartItemsWithDetails.map((item) => item.product?.category)
-      return cartCategories.includes(p.category) && !items.some((item) => item.id == p.id)
-    })
-    .slice(0, 4)
 
   const subtotal = totalPrice()
   const shipping = subtotal >= 100 ? 0 : 15
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
 
-  if (items.length === 0) {
+  if (data?.items.length === 0) {
     return (
       <main className="bg-background flex flex-col">
-
         <div className="flex-1 flex flex-col items-center justify-center container mx-auto px-4 pt-32 pb-24">
           <div className="max-w-md text-center">
             <div className="w-24 h-24 rounded-full bg-card/50 flex items-center justify-center mx-auto mb-6 border border-white/5">
@@ -61,11 +52,12 @@ const CartPage = () => {
   return (
     <main className="bg-background">
       <div className="container mx-auto px-4 pt-32 pb-24">
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl font-serif mb-2">Shopping Bag</h1>
             <p className="text-muted-foreground">
-              {items.length} {items.length === 1 ? "item" : "items"} in your bag
+              {data?.items?.length} {data?.items?.length === 1 ? "item" : "items"} in your bag
             </p>
           </div>
           <Link href="/shop" className="text-primary hover:underline text-sm">
@@ -73,68 +65,86 @@ const CartPage = () => {
           </Link>
         </div>
 
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           <div className="lg:col-span-2">
             <div className="space-y-6">
-              {cartItemsWithDetails.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex gap-4 sm:gap-6 p-4 sm:p-6 bg-card/30 rounded-lg border border-white/5 hover:border-white/10 transition-colors"
-                >
-                  <Link
-                    href={`/product/${item.id}`}
-                    className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-card shrink-0"
+              {
+                data?.items?.map((item: TCartProduct) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-4 sm:gap-6 p-4 sm:p-6 bg-card/30 rounded-lg border border-white/5 hover:border-white/10 transition-colors"
                   >
-                    <img
-                      src={item.image || "/placeholder.svg"}
-                      alt={item.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform"
-                    />
-                  </Link>
+                    <Link
+                      href={`/product/${item?.product?.slug}`}
+                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-card shrink-0"
+                    >
+                      <img
+                        src={item?.product?.main_image || "/placeholder.svg"}
+                        alt={item?.product.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      />
+                    </Link>
 
-                  <div className="flex-1 flex flex-col justify-between min-w-0">
-                    <div>
-                      <div className="flex justify-between items-start gap-4 mb-2">
-                        <Link href={`/product/${item.id}`}>
-                          <h3 className="font-serif text-lg sm:text-xl hover:text-primary transition-colors line-clamp-1">
-                            {item.name}
-                          </h3>
-                        </Link>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                          title="Remove item"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
+                    <div className="flex-1 flex flex-col justify-between min-w-0">
+                      <div>
+                        <div className="flex justify-between items-start gap-4 mb-2">
+                          <Link href={`/product/${item?.product?.slug}`}>
+                            <h3 className="font-serif text-lg sm:text-xl hover:text-primary transition-colors line-clamp-1">
+                              {item?.product.title}
+                            </h3>
+                          </Link>
+                          <button
+                            onClick={() => removeItem(item?.id)}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                            title="Remove item"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">{item?.product?.category?.name}</p>
+                        <p className="text-sm text-muted-foreground mb-3">{item?.color?.name}, {item?.size?.name}</p>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">{item.category}</p>
-                      
-                    </div>
 
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex items-center border border-white/10 rounded-lg overflow-hidden bg-card">
-                        <button
-                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          className="px-3 py-2 hover:bg-white/5 transition-colors"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="px-4 py-2 font-medium min-w-10 text-center text-sm">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="px-3 py-2 hover:bg-white/5 transition-colors"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center border border-white/10 rounded-lg overflow-hidden bg-card">
+                          <button
+                            onClick={async () => {
+                              if (item?.product?.is_in_stock) {
+                                try {
+                                  await updateCart({ id: item?.product?.id, data: {quantity: item?.quantity - 1} }).unwrap();
+                                } catch (error) {
+                                  console.log(error)
+                                }
+                              }
+                            }}
+                            className="px-3 py-2 hover:bg-white/5 transition-colors"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="px-4 py-2 font-medium min-w-10 text-center text-sm">
+                            {item?.quantity}
+                          </span>
+                          <button
+                            onClick={async () => {
+                              if (item?.product?.is_in_stock) {
+                                try {
+                                  await updateCart({ id: item?.product?.id, data: {quantity: item?.quantity + 1} }).unwrap();
+                                } catch (error) {
+                                  console.log(error)
+                                }
+                              }
+                            }}
+                            className="px-3 py-2 hover:bg-white/5 transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <p className="font-medium text-lg">${(item.product.current_price * item.quantity).toFixed(2)}</p>
                       </div>
-                      <p className="font-medium text-lg">${(item.price * item.quantity).toFixed(2)}</p>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="mt-6 p-6 bg-card/30 rounded-lg border border-white/5">
@@ -225,7 +235,7 @@ const CartPage = () => {
           </div>
         </div>
 
-        {relatedProducts.length > 0 && (
+        {/* {relatedProducts.length > 0 && (
           <div className="mt-24">
             <div className="mb-8">
               <h2 className="text-3xl font-serif mb-2">Complete Your Collection</h2>
@@ -237,7 +247,7 @@ const CartPage = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
       <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />

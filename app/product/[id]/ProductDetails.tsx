@@ -4,18 +4,32 @@ import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { ProductImage, TColor, TProductDetails, TSize } from "@/types/all"
+import { toast } from "react-toastify"
+import { useAddToCartMutation } from "@/redux/features/user/cart.api"
 
 const ProductDetails = ({ product }: { product: TProductDetails }) => {
+    const [addToCart, { isLoading }] = useAddToCartMutation();
     const [activeImage, setActiveImage] = useState(product?.images?.[0]);
-    const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.name)
-    const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0]?.name)
+    const [selectedColor, setSelectedColor] = useState(product?.colors?.[0])
+    const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0])
     const [quantity, setQuantity] = useState(1);
-    // console.log(selectedSize);
 
     const isWishlisted = true;
 
-    const handleAddToCart = () => {
-        console.log("cart")
+    const handleAddToCart = async() => {
+        const data = {
+            product_id: product.id,
+            quantity,
+            color_id: selectedColor?.id,
+            size_id: selectedSize?.id
+        }
+        try {
+            const result = await addToCart(data).unwrap();
+            // console.log(result)
+            toast.success("Added to cart successfully");
+        } catch (error) {
+            toast.error("Failed to add to cart")
+        } 
     }
 
     const handleWishlist = () => {
@@ -86,14 +100,14 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                     <div className="space-y-4 mb-6">
                         <div className="flex gap-2">
                             <span className="text-sm font-medium uppercase text-muted-foreground tracking-wider">Color:</span>
-                            <span className="text-sm  uppercase">{selectedColor}</span>
+                            <span className="text-sm  uppercase">{selectedColor?.name}</span>
                         </div>
                         <div className="flex gap-2">
                             {product?.colors?.map((color: TColor) => (
                                 <button
                                     key={color.name}
-                                    onClick={() => setSelectedColor(color.name)}
-                                    className={`size-10 rounded-full border-2 transition-all hover:scale-105 ${selectedColor === color.name ? "border-primary shadow-lg shadow-primary/20" : "border-white/10"
+                                    onClick={() => setSelectedColor(color)}
+                                    className={`size-10 rounded-full border-2 transition-all hover:scale-105 ${selectedColor === color ? "border-primary shadow-lg shadow-primary/20" : "border-white/10"
                                         }`}
                                     style={{ backgroundColor: color.hex_code }}
                                     title={color.name}
@@ -107,14 +121,14 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                     <div className="space-y-4">
                         <div className="flex gap-2">
                             <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Size: </span>
-                            <span className="text-sm text-muted-foreground uppercase">{selectedSize}</span>
+                            <span className="text-sm text-muted-foreground uppercase">{selectedSize?.name}</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {product?.sizes.map((size: TSize) => (
                                 <button
                                     key={size?.id}
-                                    onClick={() => setSelectedSize(size?.name)}
-                                    className={`px-5 py-2 border transition-all rounded-3xl hover:border-primary ${selectedSize === size.name
+                                    onClick={() => setSelectedSize(size)}
+                                    className={`px-5 py-2 border transition-all rounded-3xl hover:border-primary ${selectedSize === size
                                         ? "bg-primary text-primary-foreground border-primary"
                                         : "border-white/10 hover:bg-card"
                                         }`}
@@ -155,7 +169,9 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                 <div className="flex gap-3 mb-8">
                     <Button onClick={handleAddToCart} size="lg" className="flex-1 h-14 text-base rounded-lg">
                         <Package className="w-5 h-5" />
-                        Add to Bag
+                        {
+                            isLoading ? "Adding..." : "Add to Bag"
+                        }
                     </Button>
                     <Button
                         onClick={handleWishlist}
