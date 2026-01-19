@@ -1,7 +1,8 @@
 "use client"
 import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ChevronDown, PackageOpen } from "lucide-react"
 import { useState } from "react"
 import { useGetProductsQuery } from "@/redux/features/user/product.api"
 import { TProduct } from "@/types/all"
@@ -35,11 +36,20 @@ const ShopPage = () => {
 
   const { data, isLoading } = useGetProductsQuery({ search: "", category, min_price: priceRanges.min_price, max_price: priceRanges.max_price });
 
-  console.log(category, priceRanges, data);
+  // console.log(category, priceRanges, data);
 
   const handlePriceRangeChange = (range: string) => {
     const numbers = range.split("-");
-    setPriceRanges({ max_price: numbers[0] ? parseInt(numbers[0]) : undefined, min_price: numbers[1] ? parseInt(numbers[1]) : undefined });
+    const newMinPrice = numbers[0] ? parseInt(numbers[0]) : undefined;
+    const newMaxPrice = numbers[1] ? parseInt(numbers[1]) : undefined;
+    
+    // If clicking the same range, deselect it
+    if (priceRanges.min_price === newMinPrice && priceRanges.max_price === newMaxPrice) {
+      setPriceRanges({ max_price: undefined, min_price: undefined });
+    } else {
+      // Otherwise, select the new range
+      setPriceRanges({ max_price: newMaxPrice, min_price: newMinPrice });
+    }
   };
 
   return (
@@ -78,36 +88,36 @@ const ShopPage = () => {
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    className="rounded border-white/10 bg-card cursor-pointer"
+                    className="rounded border-white/10 bg-card cursor-pointer accent-primary"
                     id="p1"
                     checked={priceRanges.max_price === 100 && priceRanges.min_price === 0}
                     onChange={() => handlePriceRangeChange("0-100")}
                   />
-                  <label htmlFor="p1" className="text-sm text-muted-foreground cursor-pointer">
+                  <label htmlFor="p1" className={`text-sm cursor-pointer transition-colors ${priceRanges.max_price === 100 && priceRanges.min_price === 0 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
                     $0 - $100
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    className="rounded border-white/10 bg-card cursor-pointer"
+                    className="rounded border-white/10 bg-card cursor-pointer accent-primary"
                     id="p2"
                     checked={priceRanges.max_price === 500 && priceRanges.min_price === 100}
                     onChange={() => handlePriceRangeChange("100-500")}
                   />
-                  <label htmlFor="p2" className="text-sm text-muted-foreground cursor-pointer">
+                  <label htmlFor="p2" className={`text-sm cursor-pointer transition-colors ${priceRanges.max_price === 500 && priceRanges.min_price === 100 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
                     $100 - $500
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    className="rounded border-white/10 bg-card cursor-pointer"
+                    className="rounded border-white/10 bg-card cursor-pointer accent-primary"
                     id="p3"
                     checked={priceRanges.max_price === undefined && priceRanges.min_price === 500}
                     onChange={() => handlePriceRangeChange("500+")}
                   />
-                  <label htmlFor="p3" className="text-sm text-muted-foreground cursor-pointer">
+                  <label htmlFor="p3" className={`text-sm cursor-pointer transition-colors ${priceRanges.max_price === undefined && priceRanges.min_price === 500 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
                     $500+
                   </label>
                 </div>
@@ -118,7 +128,7 @@ const ShopPage = () => {
 
           <div className="flex-1">
             <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-              <span className="text-sm text-muted-foreground">Showing 8 results</span>
+              <span className="text-sm text-muted-foreground">Showing {data?.count} results</span>
               <div className="relative">
                 <Button
                   variant="ghost"
@@ -149,11 +159,31 @@ const ShopPage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.results?.map((product: TProduct) => (
-                <ProductCard product={product} />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, index) => (
+                  <div key={index} className="space-y-4">
+                    <Skeleton className="aspect-square w-full rounded-lg" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : data?.results && data.results.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.results.map((product: TProduct) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <PackageOpen className="w-16 h-16 text-muted-foreground/50 mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No Products Found</h3>
+                <p className="text-muted-foreground max-w-md">
+                  No products match your current filters. Try adjusting your category or price range selection.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
