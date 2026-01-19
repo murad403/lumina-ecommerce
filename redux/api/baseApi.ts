@@ -5,9 +5,9 @@ import { getCurrentUser } from "@/utils/auth";
 const baseQuery = fetchBaseQuery({
     baseUrl: "https://db926d6p-8000.asse.devtunnels.ms/api",
     prepareHeaders: async(headers) => {
-        const {refreshToken} = await getCurrentUser();
-        if (refreshToken) {
-            headers.set('Authorization', `Bearer ${refreshToken}`);
+        const {refreshToken, accessToken} = await getCurrentUser();
+        if (accessToken) {
+            headers.set('Authorization', `Bearer ${accessToken}`);
         }
         return headers;
     }

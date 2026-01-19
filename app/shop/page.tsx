@@ -2,10 +2,18 @@
 import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
-import { products } from "@/lib/data"
 import { useState } from "react"
+import { useGetProductsQuery } from "@/redux/features/user/product.api"
+import { TProduct } from "@/types/all"
 
-const categories = ["All Items", "Timepieces", "Leather Goods", "Audio", "Travel"];
+const categoriesOptions = [
+  { label: "All Items", value: "" },
+  { label: "Timepieces", value: "Timepieces" },
+  { label: "Leather Goods", value: "Leather Goods" },
+  { label: "Audio", value: "Audio" },
+  { label: "Travel", value: "Travel" },
+]
+
 
 const sortOptions = [
   { label: "Featured", value: "featured" },
@@ -15,50 +23,24 @@ const sortOptions = [
   { label: "Name: Z to A", value: "name-desc" },
 ];
 
+
+
 const ShopPage = () => {
-  const [category, setCategory] = useState<string>("All Items");
-  const [priceRanges, setPriceRanges] = useState<string[]>([]);
+
   const [sortBy, setSortBy] = useState<string>("featured");
+  const [category, setCategory] = useState<string>("");
+  const [priceRanges, setPriceRanges] = useState<{ max_price?: number, min_price?: number }>({ max_price: undefined, min_price: undefined });
+
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  console.log(priceRanges, category)
+  const { data, isLoading } = useGetProductsQuery({ search: "", category, min_price: priceRanges.min_price, max_price: priceRanges.max_price });
+
+  console.log(category, priceRanges, data);
 
   const handlePriceRangeChange = (range: string) => {
-    setPriceRanges(prev =>
-      prev.includes(range)
-        ? prev.filter(r => r !== range)
-        : [...prev, range]
-    );
+    const numbers = range.split("-");
+    setPriceRanges({ max_price: numbers[0] ? parseInt(numbers[0]) : undefined, min_price: numbers[1] ? parseInt(numbers[1]) : undefined });
   };
-
-  const filteredProducts = products.filter(product => {
-    const categoryMatch = category === "All Items" || product.category === category;
-    if (priceRanges.length === 0) return categoryMatch;
-    const price = product.price;
-    const priceMatch = priceRanges.some(range => {
-      if (range === "0-100") return price >= 0 && price <= 100;
-      if (range === "100-500") return price > 100 && price <= 500;
-      if (range === "500+") return price > 500;
-      return false;
-    });
-
-    return categoryMatch && priceMatch;
-  });
-
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case "price-asc":
-        return a.price - b.price;
-      case "price-desc":
-        return b.price - a.price;
-      case "name-asc":
-        return a.name.localeCompare(b.name);
-      case "name-desc":
-        return b.name.localeCompare(a.name);
-      default:
-        return 0;
-    }
-  });
 
   return (
     <main className="min-h-screen bg-background">
@@ -77,13 +59,13 @@ const ShopPage = () => {
               <h3 className="font-bold uppercase text-xs tracking-widest mb-4">Categories</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 {
-                  categories.map((categoryItem: string) =>
-                    <li key={categoryItem}>
+                  categoriesOptions.map((categoryItem: { label: string, value: string }) =>
+                    <li key={categoryItem.value}>
                       <button
-                        className={`hover:text-primary cursor-pointer transition-colors ${categoryItem === category ? 'text-primary font-medium' : ''}`}
-                        onClick={() => setCategory(categoryItem)}
+                        className={`hover:text-primary cursor-pointer transition-colors ${categoryItem.value === category ? 'text-primary font-medium' : ''}`}
+                        onClick={() => setCategory(categoryItem.value)}
                       >
-                        {categoryItem}
+                        {categoryItem.label}
                       </button>
                     </li>
                   )
@@ -98,7 +80,7 @@ const ShopPage = () => {
                     type="checkbox"
                     className="rounded border-white/10 bg-card cursor-pointer"
                     id="p1"
-                    checked={priceRanges.includes("0-100")}
+                    checked={priceRanges.max_price === 100 && priceRanges.min_price === 0}
                     onChange={() => handlePriceRangeChange("0-100")}
                   />
                   <label htmlFor="p1" className="text-sm text-muted-foreground cursor-pointer">
@@ -110,7 +92,7 @@ const ShopPage = () => {
                     type="checkbox"
                     className="rounded border-white/10 bg-card cursor-pointer"
                     id="p2"
-                    checked={priceRanges.includes("100-500")}
+                    checked={priceRanges.max_price === 500 && priceRanges.min_price === 100}
                     onChange={() => handlePriceRangeChange("100-500")}
                   />
                   <label htmlFor="p2" className="text-sm text-muted-foreground cursor-pointer">
@@ -122,7 +104,7 @@ const ShopPage = () => {
                     type="checkbox"
                     className="rounded border-white/10 bg-card cursor-pointer"
                     id="p3"
-                    checked={priceRanges.includes("500+")}
+                    checked={priceRanges.max_price === undefined && priceRanges.min_price === 500}
                     onChange={() => handlePriceRangeChange("500+")}
                   />
                   <label htmlFor="p3" className="text-sm text-muted-foreground cursor-pointer">
@@ -133,9 +115,10 @@ const ShopPage = () => {
             </div>
           </aside>
 
+
           <div className="flex-1">
             <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-              <span className="text-sm text-muted-foreground">Showing {sortedProducts.length} results</span>
+              <span className="text-sm text-muted-foreground">Showing 8 results</span>
               <div className="relative">
                 <Button
                   variant="ghost"
@@ -167,15 +150,8 @@ const ShopPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={product.priceFormatted}
-                  image={product.image}
-                  tag={product.tag}
-                />
+              {data?.results?.map((product: TProduct) => (
+                <ProductCard product={product} />
               ))}
             </div>
           </div>
