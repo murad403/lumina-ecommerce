@@ -78,8 +78,10 @@ const Product = () => {
           <ProductDetails product={data}></ProductDetails>
         )}
 
+
+
         {/* product details tabs */}
-        {/* <ProductDetailsTabs product={product}  averageRating={averageRating}/> */}
+        <ProductDetailsTabs product={data}/>
 
 
 

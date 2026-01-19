@@ -77,7 +77,7 @@ interface TMaterial {
   name: string;
   description: string;
 }
-interface TFeature {
+export interface TFeature {
   id: number;
   feature: string;
   display_order: number;

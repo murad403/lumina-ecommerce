@@ -8,8 +8,9 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/ContextProvider/AuthContext'
+import { TFeature, TProductDetails } from '@/types/all'
 
-const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageRating: number }) => {
+const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
     const { isAuth } = useAuth();
     const [reviewRating, setReviewRating] = useState(5)
     const [reviewComment, setReviewComment] = useState("")
@@ -35,7 +36,7 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                         value="reviews"
                         className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
                     >
-                        Reviews ({product.reviews?.length || 0})
+                        Reviews ({product?.average_rating})
                     </TabsTrigger>
                     <TabsTrigger
                         value="shipping"
@@ -50,72 +51,66 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                         <div>
                             <h3 className="text-xl font-serif mb-6">Features</h3>
                             <ul className="space-y-3">
-                                <li className="flex items-start gap-3">
-                                    <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                    <span className="text-muted-foreground">Premium materials and expert craftsmanship</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                    <span className="text-muted-foreground">Timeless minimalist design philosophy</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                    <span className="text-muted-foreground">Handcrafted with attention to every detail</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                    <span className="text-muted-foreground">Lifetime warranty and authenticity guarantee</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                    <span className="text-muted-foreground">Sustainable and ethically sourced materials</span>
-                                </li>
+                                {
+                                    product?.features.map((feature: TFeature) =>
+                                        <li key={feature?.id} className="flex items-start gap-3">
+                                            <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                                            <span className="text-muted-foreground">{feature?.feature}</span>
+                                        </li>
+                                    )
+                                }
                             </ul>
                         </div>
                         <div>
                             <h3 className="text-xl font-serif mb-6">Specifications</h3>
                             <div className="space-y-3">
-                                <div className="flex justify-between py-3 border-b border-white/5">
-                                    <span className="text-muted-foreground">Category</span>
-                                    <span className="font-medium">{product.category}</span>
+                                <div className="flex justify-between border-b border-white/5">
+                                    <span className="">Category</span>
+                                    <span className="text-muted-foreground font-medium">{product?.specifications?.category}</span>
                                 </div>
-                                <div className="flex justify-between py-3 border-b border-white/5">
-                                    <span className="text-muted-foreground">Material</span>
-                                    <span className="font-medium">Premium Grade</span>
+                                <div className="flex justify-between border-b border-white/5">
+                                    <span className="">Material</span>
+                                    <span className="text-muted-foreground font-medium">{product?.specifications?.material}</span>
                                 </div>
-                                <div className="flex justify-between py-3 border-b border-white/5">
-                                    <span className="text-muted-foreground">Origin</span>
-                                    <span className="font-medium">Handcrafted Globally</span>
+                                <div className="flex justify-between border-b border-white/5">
+                                    <span className="">Origin</span>
+                                    <span className="text-muted-foreground font-medium">{product?.specifications?.origin}</span>
                                 </div>
-                                <div className="flex justify-between py-3 border-b border-white/5">
-                                    <span className="text-muted-foreground">Warranty</span>
-                                    <span className="font-medium">Lifetime Coverage</span>
+                                <div className="flex justify-between border-b border-white/5">
+                                    <span className="">Warranty</span>
+                                    <span className="text-muted-foreground font-medium">{product?.specifications?.warranty}</span>
                                 </div>
-                                <div className="flex justify-between py-3 border-b border-white/5">
-                                    <span className="text-muted-foreground">SKU</span>
-                                    <span className="font-medium">{product.id}</span>
+                                <div className="flex justify-between border-b border-white/5">
+                                    <span className="">SKU</span>
+                                    <span className="text-muted-foreground font-medium">{product?.id}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </TabsContent>
 
-                <TabsContent value="reviews" className="mt-0">
+                {/* <TabsContent value="reviews" className="mt-0">
                     <div className="max-w-4xl">
                         <div className="flex items-center gap-8 mb-12 p-8 bg-card/30 rounded-lg border border-white/5">
                             <div className="text-center">
-                                <div className="text-5xl font-bold mb-2">{averageRating.toFixed(1)}</div>
-                                <div className="flex text-primary mb-2">
-                                    {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className={`w-5 h-5 ${s <= averageRating ? "fill-current" : ""}`} />
-                                    ))}
+                                <div className="text-5xl font-bold mb-2">{product?.average_rating.toFixed(1)}</div>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex gap-1">
+                                        {
+                                            [...Array(product?.average_rating || 5)].map((_, i) => (
+                                                <Star key={i} className={`w-4 h-4 fill-current text-primary`} />
+                                            ))
+                                        }
+                                    </div>
+                                    <span className="text-sm text-muted-foreground">
+                                        ({product?.review_count || 0} reviews)
+                                    </span>
                                 </div>
-                                <div className="text-sm text-muted-foreground">{product.reviews?.length || 0} reviews</div>
                             </div>
                             <Separator orientation="vertical" className="h-20" />
                             <div className="flex-1">
                                 <p className="text-muted-foreground mb-4">
-                                    {product.reviews?.length
+                                    {product.review_count > 0
                                         ? "See what our customers are saying"
                                         : "Be the first to review this product"}
                                 </p>
@@ -129,10 +124,9 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                             </div>
                         </div>
 
-                        {/* Review List */}
-                        {product.reviews && product.reviews.length > 0 && (
+                        {product?.review_count > 0 && (
                             <div className="space-y-6 mb-12">
-                                {product.reviews.map((review: any) => (
+                                {product?.reviews.map((review: any) => (
                                     <div key={review.id} className="p-6 bg-card/30 rounded-lg border border-white/5">
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex-1">
@@ -174,7 +168,6 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                             </div>
                         )}
 
-                        {/* Write Review Form */}
                         {isAuth && (
                             <div className="p-8 bg-card/30 rounded-lg border border-white/5">
                                 <h3 className="text-xl font-serif mb-6">Write a Review</h3>
@@ -234,9 +227,9 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                             </div>
                         )}
                     </div>
-                </TabsContent>
+                </TabsContent> */}
 
-                <TabsContent value="shipping" className="mt-0">
+                {/* <TabsContent value="shipping" className="mt-0">
                     <div className="grid md:grid-cols-2 gap-12">
                         <div>
                             <h3 className="text-xl font-serif mb-6">Shipping Information</h3>
@@ -270,7 +263,7 @@ const ProductDetailsTabs = ({ product, averageRating }: { product: any, averageR
                             </div>
                         </div>
                     </div>
-                </TabsContent>
+                </TabsContent> */}
             </Tabs>
         </div>
     )
