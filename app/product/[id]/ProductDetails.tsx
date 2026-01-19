@@ -134,14 +134,16 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                         <div className="flex items-center border border-white/10 rounded-4xl overflow-hidden bg-card">
                             <button
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                className="px-4 py-3"
+                                disabled={quantity <= 1}
+                                className="px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <Minus className="w-4 h-4" />
                             </button>
                             <span className="px-6 py-3 font-medium min-w-12 text-center">{quantity}</span>
                             <button
                                 onClick={() => setQuantity(quantity + 1)}
-                                className="px-4 py-3"
+                                disabled={quantity >= (product?.stock_quantity || 0)}
+                                className="px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <Plus className="w-4 h-4" />
                             </button>

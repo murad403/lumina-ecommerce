@@ -74,7 +74,7 @@ const Product = () => {
         )}
 
         {/* product details */}
-        {!isLoading && !isError && data && (
+         {!isLoading && !isError && data && (
           <ProductDetails product={data}></ProductDetails>
         )}
 
