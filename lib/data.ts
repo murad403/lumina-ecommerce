@@ -244,3 +244,40 @@ export const products: Product[] = [
     ],
   },
 ]
+
+
+// product details tabs ==============
+export type TTab = {
+  value: string;
+  label: string;
+}
+export const tabs: TTab[] = [
+  { value: "details", label: "product details" },
+  { value: "reviews", label: "reviews" },
+  { value: "shipping", label: "shipping & returns" }
+]
+
+// categories options========================
+export type TCategory = {
+  label: string;
+  value: string;
+}
+export const categoriesOptions: TCategory[] = [
+  { label: "All Items", value: "" },
+  { label: "Timepieces", value: "Timepieces" },
+  { label: "Leather Goods", value: "Leather Goods" },
+  { label: "Audio", value: "Audio" },
+  { label: "Travel", value: "Travel" },
+]
+// sort options=============================
+export type TSortOption = {
+  label: string;
+  value: string;
+}
+export const sortOptions: TSortOption[] = [
+  { label: "Featured", value: "featured" },
+  { label: "Price: Low to High", value: "price-asc" },
+  { label: "Price: High to Low", value: "price-desc" },
+  { label: "Name: A to Z", value: "name-asc" },
+  { label: "Name: Z to A", value: "name-desc" },
+];

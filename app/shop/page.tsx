@@ -6,24 +6,7 @@ import { ChevronDown, PackageOpen } from "lucide-react"
 import { useState } from "react"
 import { useGetProductsQuery } from "@/redux/features/user/product.api"
 import { TProduct } from "@/types/all"
-
-const categoriesOptions = [
-  { label: "All Items", value: "" },
-  { label: "Timepieces", value: "Timepieces" },
-  { label: "Leather Goods", value: "Leather Goods" },
-  { label: "Audio", value: "Audio" },
-  { label: "Travel", value: "Travel" },
-]
-
-
-const sortOptions = [
-  { label: "Featured", value: "featured" },
-  { label: "Price: Low to High", value: "price-asc" },
-  { label: "Price: High to Low", value: "price-desc" },
-  { label: "Name: A to Z", value: "name-asc" },
-  { label: "Name: Z to A", value: "name-desc" },
-];
-
+import { categoriesOptions, sortOptions, TCategory, TSortOption } from "@/lib/data"
 
 
 const ShopPage = () => {
@@ -69,8 +52,8 @@ const ShopPage = () => {
               <h3 className="font-bold uppercase text-xs tracking-widest mb-4">Categories</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 {
-                  categoriesOptions.map((categoryItem: { label: string, value: string }) =>
-                    <li key={categoryItem.value}>
+                  categoriesOptions.map((categoryItem: TCategory, index: number) =>
+                    <li key={index}>
                       <button
                         className={`hover:text-primary cursor-pointer transition-colors ${categoryItem.value === category ? 'text-primary font-medium' : ''}`}
                         onClick={() => setCategory(categoryItem.value)}
@@ -141,9 +124,9 @@ const ShopPage = () => {
                 </Button>
                 {showSortDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-card border border-white/10 rounded-md shadow-lg z-10">
-                    {sortOptions.map((option) => (
+                    {sortOptions.map((option: TSortOption, index: number) => (
                       <button
-                        key={option.value}
+                        key={index}
                         className={`w-full text-left px-4 py-2 text-sm hover:bg-white/5 transition-colors ${sortBy === option.value ? 'text-primary font-medium' : 'text-muted-foreground'
                           }`}
                         onClick={() => {

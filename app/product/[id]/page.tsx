@@ -11,7 +11,7 @@ import { AlertCircle } from "lucide-react"
 const Product = () => {
   const { id } = useParams();
   const {data, isLoading, isError} = useProductDetailsQuery(id, {skip: !id});
-  console.log(data)
+  // console.log(data)
 
   return (
     <main className="min-h-screen bg-background">

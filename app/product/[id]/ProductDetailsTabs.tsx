@@ -9,8 +9,13 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/ContextProvider/AuthContext'
 import { TFeature, TProductDetails } from '@/types/all'
+import { useViewProductReviewsQuery } from '@/redux/features/user/productReviews.api'
+import { tabs, TTab } from '@/lib/data'
 
 const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
+
+    const { data } = useViewProductReviewsQuery(product?.slug, { skip: !product?.slug });
+    console.log(data)
     const { isAuth } = useAuth();
     const [reviewRating, setReviewRating] = useState(5)
     const [reviewComment, setReviewComment] = useState("")
@@ -26,24 +31,17 @@ const ProductDetailsTabs = ({ product }: { product: TProductDetails }) => {
         <div className="mx-auto mb-24">
             <Tabs defaultValue="details" className="w-full">
                 <TabsList className="w-full justify-between border-b border-white/10 bg-transparent rounded-none h-auto p-0 mb-8">
-                    <TabsTrigger
-                        value="details"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
-                    >
-                        Product Details
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="reviews"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
-                    >
-                        Reviews ({product?.average_rating})
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="shipping"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
-                    >
-                        Shipping & Returns
-                    </TabsTrigger>
+                    {
+                        tabs.map((tab: TTab, index: number) =>
+                            <TabsTrigger 
+                                key={index}
+                                value={tab?.value}
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4 capitalize"
+                            >
+                                {tab?.label}
+                            </TabsTrigger>
+                        )
+                    }
                 </TabsList>
 
                 <TabsContent value="details" className="mt-0">
