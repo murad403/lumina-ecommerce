@@ -1,21 +1,15 @@
 "use client"
 import Link from "next/link"
-import { products } from "@/lib/data"
-import { notFound, useParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import ProductDetailsTabs from "./ProductDetailsTabs"
 import ProductDetails from "./ProductDetails"
-
+import { useProductDetailsQuery } from "@/redux/features/user/product.api"
 
 const Product = () => {
   const { id } = useParams();
-  const product = products.find((p) => p.id == Number(id))
-  if (!product) notFound()
-  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
-
-  const averageRating = product.reviews?.length
-    ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length
-    : 5
+  const {data, isLoading} = useProductDetailsQuery(id, {skip: !id});
+  console.log(data)
 
   return (
     <main className="min-h-screen bg-background">
@@ -31,21 +25,21 @@ const Product = () => {
             Shop
           </Link>
           <span>/</span>
-          <span className="text-foreground">{product.name}</span>
+          <span className="text-foreground">{data?.name}</span>
         </div>
 
         {/* product details */}
-        <ProductDetails product={product} averageRating={averageRating}></ProductDetails>
+        <ProductDetails product={data}></ProductDetails>
 
         {/* product details tabs */}
-        <ProductDetailsTabs product={product}  averageRating={averageRating}/>
+        {/* <ProductDetailsTabs product={product}  averageRating={averageRating}/> */}
 
 
 
 
 
         {/* Related Products */}
-        {relatedProducts.length > 0 && (
+        {/* {relatedProducts.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-serif">You May Also Like</h2>
@@ -59,7 +53,7 @@ const Product = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </main>
   )

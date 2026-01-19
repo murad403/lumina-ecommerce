@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button"
 
 type TProps = {
     product: any;
-    averageRating: number;
 }
 
-const ProductDetails = ({ product, averageRating }: TProps) => {
+const ProductDetails = ({ product }: TProps) => {
     const [activeImage, setActiveImage] = useState(0)
     const [selectedColor, setSelectedColor] = useState(product.colors?.[0]?.name)
     const [selectedSize, setSelectedSize] = useState(product.sizes?.[0])
