@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Instagram, Facebook, Twitter, ArrowRight } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
 import { contactValidation } from "@/validation/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -16,7 +15,7 @@ const ContactPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<ContactInputs>({
     resolver: zodResolver(contactValidation)
   })
-  const { toast } = useToast()
+
 
 
   const onSubmit: SubmitHandler<ContactInputs> = (data) => {
