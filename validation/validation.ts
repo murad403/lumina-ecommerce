@@ -101,3 +101,9 @@ export const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
   comment: z.string().min(10, "Review must be at least 10 characters").max(1000, "Review must be less than 1000 characters")
 })
+
+export const addressSchema = z.object({
+  label: z.string().min(1, "Label is required").max(50, "Label must be less than 50 characters"),
+  address: z.string().min(10, "Address must be at least 10 characters").max(200, "Address must be less than 200 characters"),
+  is_default: z.boolean().default(false)
+})

@@ -8,7 +8,8 @@ const shippingAddressApi = baseApi.injectEndpoints({
                     url: `/addresses/`,
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["addresses"]
         }),
 
         addShippingAddress: builder.mutation({
@@ -18,16 +19,19 @@ const shippingAddressApi = baseApi.injectEndpoints({
                     method: "POST",
                     body: data
                 }
-            }
+            },
+            invalidatesTags: ["addresses"]
         }),
 
         updateShippingAddress: builder.mutation({
-            query: (id) =>{
+            query: ({id, data}) =>{
                 return {
                     url: `/addresses/${id}/`,
-                    method: "PUT"
+                    method: "PUT",
+                    body: data
                 }
-            }
+            },
+            invalidatesTags: ["addresses"]
         }),
 
         setDefaultAddress: builder.mutation({
@@ -36,7 +40,8 @@ const shippingAddressApi = baseApi.injectEndpoints({
                     url: `/addresses/${id}/set-default/`,
                     method: "POST"
                 }
-            }
+            },
+            invalidatesTags: ["addresses"]
         }),
 
         removeShippingAddress: builder.mutation({
@@ -45,7 +50,8 @@ const shippingAddressApi = baseApi.injectEndpoints({
                     url: `/addresses/${id}/`,
                     method: "DELETE"
                 }
-            }
+            },
+            invalidatesTags: ["addresses"]
         }),
     })
 })
