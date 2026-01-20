@@ -16,7 +16,8 @@ const productApi = baseApi.injectEndpoints({
                     url,
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["wishlist"]
         }),
 
         productDetails: builder.query({

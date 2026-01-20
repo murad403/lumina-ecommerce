@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const FeatureProducts = () => {
     const {data} = useGetProductsQuery({search: "", category: "", min_price: undefined, max_price: undefined});
-    console.log(data)
+    // console.log(data)
     return (
         <section className="py-24 container mx-auto px-4">
             <div className="flex justify-between items-end mb-12">

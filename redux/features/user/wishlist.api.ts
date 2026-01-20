@@ -8,25 +8,19 @@ const wishlistApi = baseApi.injectEndpoints({
                     url: `/products/wishlist/`,
                     method: "GET"
                 }
-            }
+            },
+            providesTags: ["wishlist"]
         }),
-        addToWishlist: builder.mutation({
+        wishListToggle: builder.mutation({
             query: (id) =>{
                 return {
                     url: `/products/wishlist/toggle/${id}/`,
                     method: "POST"
                 }
-            }
-        }),
-        removeFromWishlist: builder.mutation({
-            query: (id) =>{
-                return {
-                    url: `/products/wishlist/toggle/${id}/`,
-                    method: "DELETE"
-                }
-            }
+            },
+            invalidatesTags: ["wishlist"]
         })
     })
 })
 
-export const { useGetWishlistQuery, useAddToWishlistMutation, useRemoveFromWishlistMutation } = wishlistApi;
+export const { useGetWishlistQuery, useWishListToggleMutation } = wishlistApi;

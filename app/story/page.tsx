@@ -1,3 +1,4 @@
+import Image from "next/image";
 
 
 const StoryPage = () => {
@@ -25,7 +26,9 @@ const StoryPage = () => {
               </p>
             </div>
             <div className="aspect-4/5 relative rounded-lg overflow-hidden">
-              <img
+              <Image
+                width={500}
+                height={500}
                 src="/luxury-minimalist-product-hero-dark-elegant.jpg"
                 alt="Craftsmanship"
                 className="w-full h-full object-cover"
