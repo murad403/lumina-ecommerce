@@ -2,19 +2,19 @@
 import { Button } from "@/components/ui/button"
 import { Trash2, ArrowRight, ShoppingBag, User, Minus, Plus, Lock, Tag } from "lucide-react"
 import Link from "next/link"
-import { useCart } from "@/hooks/use-cart"
-import { products } from "@/lib/data"
-import { ProductCard } from "@/components/product-card"
 import { AuthDialog } from "@/components/auth-dialog"
 import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useDeleteCartMutation, useGetCartQuery, useUpdateCartMutation } from "@/redux/features/user/cart.api"
 import { TCartProduct } from "@/types/cart"
 import { toast } from "react-toastify"
 
+
+
 const CartPage = () => {
-  const { data } = useGetCartQuery(undefined);
+  const { data, isLoading } = useGetCartQuery(undefined);
   const [updateCart] = useUpdateCartMutation();
   const [deleteCart] = useDeleteCartMutation();
 
@@ -27,15 +27,91 @@ const CartPage = () => {
     }
   }
 
-  const { items, removeItem, totalPrice } = useCart()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [promoCode, setPromoCode] = useState("");
 
+  const tax = 0;
+  const shipping = 15;
+  const subtotal = (data?.total_price || 0) + shipping + tax;
 
-  const subtotal = totalPrice()
-  const shipping = subtotal >= 100 ? 0 : 15
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+  if (isLoading) {
+    return (
+      <main className="bg-background">
+        <div className="container mx-auto px-4 pt-32 pb-24">
+          <div className="mb-8">
+            <Skeleton className="h-10 w-64 mb-2" />
+            <Skeleton className="h-5 w-40" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+            <div className="lg:col-span-2">
+              <div className="space-y-6">
+                {[...Array(3)].map((_, index) => (
+                  <div key={index} className="flex items-center gap-4 sm:gap-6 p-4 sm:p-6 bg-card/30 rounded-lg border border-white/5">
+                    <Skeleton className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg shrink-0" />
+                    <div className="flex-1 space-y-3">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                      <Skeleton className="h-4 w-1/3" />
+                      <div className="flex justify-between items-center">
+                        <Skeleton className="h-10 w-32 rounded-lg" />
+                        <Skeleton className="h-6 w-20" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 p-6 bg-card/30 rounded-lg border border-white/5">
+                <Skeleton className="h-6 w-48 mb-3" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-10 flex-1" />
+                  <Skeleton className="h-10 w-24" />
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-1">
+              <div className="space-y-6 sticky top-32">
+                <div className="p-6 bg-card/30 rounded-lg border border-white/5">
+                  <Skeleton className="h-5 w-32 mb-6" />
+                  <div className="space-y-4 mb-6">
+                    <div className="flex justify-between">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <div className="flex justify-between">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <div className="flex justify-between">
+                      <Skeleton className="h-4 w-28" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-6 w-20" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-12 w-full rounded-lg mb-3" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+
+                <div className="p-6 bg-card/30 rounded-lg border border-white/5">
+                  <Skeleton className="h-10 w-10 rounded-full mb-3" />
+                  <Skeleton className="h-6 w-48 mb-2" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4 mb-4" />
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
   if (data?.items.length === 0) {
     return (
@@ -184,16 +260,14 @@ const CartPage = () => {
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal ({items.length} items)</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Subtotal ({data?.total_items} items)</span>
+                    <span className="font-medium">${data?.total_price}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    {shipping === 0 ? (
-                      <span className="text-primary font-medium">FREE</span>
-                    ) : (
-                      <span className="font-medium">${shipping.toFixed(2)}</span>
-                    )}
+
+                    <span className="font-medium">${shipping.toFixed(2)}</span>
+
                   </div>
                   {shipping > 0 && (
                     <p className="text-xs text-muted-foreground">
@@ -209,7 +283,7 @@ const CartPage = () => {
 
                   <div className="flex justify-between text-lg font-semibold pt-2">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>${subtotal.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -245,20 +319,6 @@ const CartPage = () => {
             </div>
           </div>
         </div>
-
-        {/* {relatedProducts.length > 0 && (
-          <div className="mt-24">
-            <div className="mb-8">
-              <h2 className="text-3xl font-serif mb-2">Complete Your Collection</h2>
-              <p className="text-muted-foreground">Curated recommendations based on your selections</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((product) => (
-                <ProductCard key={product.id} name={product?.name} price={product?.price}  image={product?.image} tag={product?.tag} />
-              ))}
-            </div>
-          </div>
-        )} */}
       </div>
 
       <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />

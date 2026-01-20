@@ -3,15 +3,18 @@ import type React from "react"
 import Link from "next/link"
 import { ShoppingCart, Menu, Search, User, Heart, X, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/hooks/use-cart"
 import { useWishlist } from "@/hooks/use-wishlist"
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/ContextProvider/AuthContext"
+import { useGetCartQuery } from "@/redux/features/user/cart.api"
+
 
 export function Navbar() {
-  const totalItems = useCart((state) => state.totalItems())
+
+  const { data, isLoading } = useGetCartQuery(undefined);
+
   const wishlistItems = useWishlist((state) => state.items.length)
   const [mounted, setMounted] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -80,9 +83,9 @@ export function Navbar() {
             </Link>
             <Link href="/cart" className="p-2 relative text-muted-foreground hover:text-foreground">
               <ShoppingCart className="w-5 h-5" />
-              {mounted && totalItems > 0 && (
+              {mounted && data?.total_items > 0 && (
                 <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
-                  {totalItems}
+                  {data?.total_items}
                 </span>
               )}
             </Link>

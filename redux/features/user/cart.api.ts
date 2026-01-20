@@ -35,7 +35,6 @@ const cartApi = baseApi.injectEndpoints({
             invalidatesTags: ["cart"]
         }),
 
-
         deleteCart: builder.mutation({
             query: (id) =>{
                 return {
@@ -45,7 +44,6 @@ const cartApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["cart"]
         }),
-
 
     })
 })
