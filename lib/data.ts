@@ -1,3 +1,5 @@
+import { CreditCard, MapPin, Package, Settings, User } from "lucide-react"
+
 export interface Review {
   id: string
   author: string
@@ -281,3 +283,16 @@ export const sortOptions: TSortOption[] = [
   { label: "Name: A to Z", value: "name-asc" },
   { label: "Name: Z to A", value: "name-desc" },
 ];
+
+export type TProfileSidebarItem = {
+  title: string;
+  icon: React.ComponentType<any>;
+  href: string;
+}
+export const profileSidebarData: TProfileSidebarItem[] = [
+  { title: 'Profile', icon: User, href: '/profile' },
+  { title: 'Orders', icon: Package, href: '/profile/orders' },
+  { title: 'Addresses', icon: MapPin, href: '/profile/addresses' },
+  { title: 'Payments', icon: CreditCard, href: '/profile/payments' },
+  { title: 'Settings', icon: Settings, href: '/profile/settings' },
+]

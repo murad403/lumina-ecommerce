@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard, Eye } from "lucide-react"
+import { Package, Eye } from "lucide-react"
 import Link from "next/link"
 
 const orders = [
