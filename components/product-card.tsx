@@ -8,7 +8,6 @@ import { useWishListToggleMutation } from "@/redux/features/user/wishlist.api"
 import { toast } from "react-toastify"
 
 export function ProductCard({ product }: { product: TProduct }) {
-
   const [wishListToggle] = useWishListToggleMutation();
 
   const handleAddWishList = async () => {
