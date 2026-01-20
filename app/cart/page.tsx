@@ -9,14 +9,25 @@ import { AuthDialog } from "@/components/auth-dialog"
 import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
-import { useGetCartQuery, useUpdateCartMutation } from "@/redux/features/user/cart.api"
+import { useDeleteCartMutation, useGetCartQuery, useUpdateCartMutation } from "@/redux/features/user/cart.api"
 import { TCartProduct } from "@/types/cart"
+import { toast } from "react-toastify"
 
 const CartPage = () => {
   const { data } = useGetCartQuery(undefined);
   const [updateCart] = useUpdateCartMutation();
+  const [deleteCart] = useDeleteCartMutation();
 
-  const { items, updateQuantity, removeItem, totalPrice } = useCart()
+  const handleRemoveItem = async (id: number) => {
+    try {
+      await deleteCart(id).unwrap();
+      toast.success("Item removed from cart.")
+    } catch (error) {
+      toast.error("Failed to remove item from cart.")
+    }
+  }
+
+  const { items, removeItem, totalPrice } = useCart()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [promoCode, setPromoCode] = useState("");
 
@@ -95,7 +106,7 @@ const CartPage = () => {
                             </h3>
                           </Link>
                           <button
-                            onClick={() => removeItem(item?.id)}
+                            onClick={() => handleRemoveItem(item?.id)}
                             className="text-muted-foreground hover:text-destructive transition-colors p-1"
                             title="Remove item"
                           >
@@ -112,7 +123,7 @@ const CartPage = () => {
                             onClick={async () => {
                               if (item?.product?.is_in_stock) {
                                 try {
-                                  await updateCart({ id: item?.product?.id, data: {quantity: item?.quantity - 1} }).unwrap();
+                                  await updateCart({ id: item?.id, data: { quantity: item?.quantity - 1 } }).unwrap();
                                 } catch (error) {
                                   console.log(error)
                                 }
@@ -129,7 +140,7 @@ const CartPage = () => {
                             onClick={async () => {
                               if (item?.product?.is_in_stock) {
                                 try {
-                                  await updateCart({ id: item?.product?.id, data: {quantity: item?.quantity + 1} }).unwrap();
+                                  await updateCart({ id: item?.id, data: { quantity: item?.quantity + 1 } }).unwrap();
                                 } catch (error) {
                                   console.log(error)
                                 }
