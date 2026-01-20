@@ -3,7 +3,8 @@ import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ChevronDown, PackageOpen } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { useGetProductsQuery } from "@/redux/features/user/product.api"
 import { TProduct } from "@/types/all"
 import { categoriesOptions, sortOptions, TCategory, TSortOption } from "@/lib/data"
@@ -11,13 +12,23 @@ import { categoriesOptions, sortOptions, TCategory, TSortOption } from "@/lib/da
 
 const ShopPage = () => {
 
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("featured");
   const [category, setCategory] = useState<string>("");
   const [priceRanges, setPriceRanges] = useState<{ max_price?: number, min_price?: number }>({ max_price: undefined, min_price: undefined });
 
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  const { data, isLoading } = useGetProductsQuery({ search: "", category, min_price: priceRanges.min_price, max_price: priceRanges.max_price });
+  // Read search query from URL
+  useEffect(() => {
+    const query = searchParams.get('q');
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
+  const { data, isLoading } = useGetProductsQuery({ search: searchQuery, category, min_price: priceRanges.min_price, max_price: priceRanges.max_price });
 
   // console.log(category, priceRanges, data);
 
@@ -39,10 +50,14 @@ const ShopPage = () => {
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-32 pb-24">
         <header className="mb-12">
-          <h1 className="text-4xl md:text-6xl font-serif mb-4">All Collections</h1>
+          <h1 className="text-4xl md:text-6xl font-serif mb-4">
+            {searchQuery ? `Search Results for "${searchQuery}"` : "All Collections"}
+          </h1>
           <p className="text-muted-foreground max-w-2xl">
-            Explore our meticulously curated selection of premium goods, designed for those who appreciate the finer
-            things.
+            {searchQuery 
+              ? `Showing products matching "${searchQuery}"`
+              : "Explore our meticulously curated selection of premium goods, designed for those who appreciate the finer things."
+            }
           </p>
         </header>
 

@@ -1,4 +1,6 @@
+import { TCurrentUser } from "@/types/all";
 import { createSlice } from "@reduxjs/toolkit";
+
 
 type TInitialState = {
     user: {
@@ -6,14 +8,16 @@ type TInitialState = {
         user: {
             email: string;
             [key: string]: any;
-            } | null;
+        } | null;
     } | null;
     otp: string | null;
+    currentUser: TCurrentUser | null;
 }
 
 const initialState: TInitialState = {
     user: null,
     otp: null,
+    currentUser: null,
 }
 
 const authSlice = createSlice({
@@ -23,11 +27,14 @@ const authSlice = createSlice({
         setSignUpUser: (state, action) => {
             state.user = action.payload;
         },
-        setUserOtp: (state, action) =>{
+        setUserOtp: (state, action) => {
             state.otp = action.payload;
+        },
+        setCurrentUser: (state, action) => {
+            state.currentUser = action.payload;
         }
     }
 })
 
-export const { setSignUpUser, setUserOtp } = authSlice.actions;
+export const { setSignUpUser, setUserOtp, setCurrentUser } = authSlice.actions;
 export default authSlice.reducer;

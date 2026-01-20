@@ -11,6 +11,8 @@ import { useSignInMutation } from "@/redux/features/auth/auth.api"
 import { saveTokens } from "@/utils/auth"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
+import { useAppDispatch } from "@/redux/hooks"
+import { setCurrentUser } from "@/redux/features/auth/authSlice"
 
 type SigninInputs = z.infer<typeof signinValidation>
 
@@ -18,18 +20,20 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [signIn, { isLoading }] = useSignInMutation();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SigninInputs>({
     resolver: zodResolver(signinValidation),
     defaultValues: {
       email: "mdmurad.dev2004@gmail.com",
-      password: "123456",
+      password: "12345678%%Murad",
     }
   })
 
   const onSubmit: SubmitHandler<SigninInputs> = async (data) => {
     try {
       const result = await signIn(data).unwrap();
+      dispatch(setCurrentUser(result?.data));
       await saveTokens(result?.access_token, result?.refresh_token);
       toast.success(result?.message || "Signed in successfully");
       router.push("/profile");

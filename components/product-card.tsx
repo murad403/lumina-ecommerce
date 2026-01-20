@@ -23,9 +23,10 @@ export function ProductCard({ product }: { product: TProduct }) {
       <div className="aspect-4/5 relative">
         <Link href={`/product/${product?.slug}`}>
           <Image
+            width={500}
+            height={500}
             src={product?.main_image}
             alt={product?.title}
-            fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </Link>

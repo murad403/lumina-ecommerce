@@ -126,3 +126,21 @@ export type TReview = {
   is_verified_purchase: boolean;
   created_at: string;
 }
+
+
+export type TCurrentUser = {
+  role: string;
+  is_verified: boolean;
+  profile: TCurrentUserProfile;
+}
+export type TCurrentUserProfile = {
+    id: number;
+    user: number;
+    full_name: string;
+    email: string;
+    phone_number: any;
+    profile_picture_url: any;
+    address: any;
+    addresses: any[];
+    joined_date: string;
+}

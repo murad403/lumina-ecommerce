@@ -1,22 +1,33 @@
 "use client"
-
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/ContextProvider/AuthContext"
+import { useAppSelector } from "@/redux/hooks"
 import { User, Package, Settings, LogOut, ChevronRight, MapPin, CreditCard } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 const ProfilePage = () => {
-  const { user, isAuth } = useAuth()
+  const { isAuth } = useAuth();
+  const { currentUser } = useAppSelector((state: any) => state?.auth);
+  console.log(currentUser)
   const router = useRouter()
+  const user = {
+    phone: "123-456-7890",
+  }
+  const defaultAddress = {
+    street: "123 Main St",
+    city: "Anytown",
+    state: "CA",
+    zip: "12345",
+    country: "USA",
+  }
 
   // if (!isAuthenticated || !user) {
   //   router.push("/auth/sign-in")
   //   return null
   // }
 
-  const defaultAddress = user?.addresses.find((addr) => addr.isDefault)
+  // const defaultAddress = user?.addresses.find((addr) => addr.isDefault)
 
   const handleLogout = () => {
     router.push("/")
@@ -30,7 +41,7 @@ const ProfilePage = () => {
           <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-serif mb-2">My Account</h1>
-              <p className="text-muted-foreground">Welcome back, {user?.name}</p>
+              <p className="text-muted-foreground">Welcome back, {currentUser?.profile?.full_name}</p>
             </div>
             <Button
               onClick={handleLogout}
@@ -101,20 +112,20 @@ const ProfilePage = () => {
                       <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                         Full Name
                       </label>
-                      <p className="font-medium">{user?.name}</p>
+                      <p className="font-medium">{currentUser?.profile?.full_name}</p>
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                         Email Address
                       </label>
-                      <p className="font-medium">{user?.email}</p>
+                      <p className="font-medium">{currentUser?.profile?.email}</p>
                     </div>
-                    {user?.phone && (
+                    {currentUser?.profile?.phone && (
                       <div>
                         <label className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2 block">
                           Phone Number
                         </label>
-                        <p className="font-medium">{user?.phone}</p>
+                        <p className="font-medium">{currentUser?.profile?.phone}</p>
                       </div>
                     )}
                   </div>

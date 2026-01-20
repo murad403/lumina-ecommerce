@@ -12,7 +12,6 @@ import { useGetWishlistQuery } from "@/redux/features/user/wishlist.api"
 
 
 export function Navbar() {
-
   const { data: cartData } = useGetCartQuery(undefined);
   const {data: wishlistData} = useGetWishlistQuery(undefined);
 
