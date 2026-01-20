@@ -1,10 +1,13 @@
+"use client"
 import { ProductCard } from '@/components/product-card'
-import { Button } from '@/components/ui/button'
+import { useGetProductsQuery } from '@/redux/features/user/product.api'
+import { TProduct } from '@/types/all'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
 
 const FeatureProducts = () => {
+    const {data} = useGetProductsQuery({search: "", category: "", min_price: undefined, max_price: undefined});
+    console.log(data)
     return (
         <section className="py-24 container mx-auto px-4">
             <div className="flex justify-between items-end mb-12">
@@ -24,27 +27,11 @@ const FeatureProducts = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <ProductCard
-                    id={1}
-                    name="Ethereal Chronograph"
-                    price="$299.00"
-                    image="/luxury-gold-watch-minimalist-dark-background.jpg"
-                    tag="Best Seller"
-                />
-                <ProductCard
-                    id={2}
-                    name="Noir Leather Wallet"
-                    price="$89.00"
-                    image="/minimalist-black-leather-wallet-premium.jpg"
-                />
-                <ProductCard
-                    id={3}
-                    name="Vertex Audio Pods"
-                    price="$199.00"
-                    image="/sleek-minimalist-wireless-earbuds-black.jpg"
-                    tag="New Arrival"
-                />
-                <ProductCard id={4} name="Onyx Carry-on" price="$450.00" image="/premium-matte-black-suitcase-luggage.jpg" />
+                {
+                    data?.results?.slice(0, 4).map((product: TProduct) =>
+                        <ProductCard key={product?.id} product={product} />
+                    )
+                }
             </div>
         </section>
     )
