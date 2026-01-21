@@ -14,7 +14,6 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
     const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0])
     const [quantity, setQuantity] = useState(1);
 
-    const isWishlisted = true;
 
     const handleAddToCart = async() => {
         const data = {
@@ -177,10 +176,10 @@ const ProductDetails = ({ product }: { product: TProductDetails }) => {
                         onClick={handleWishlist}
                         size="lg"
                         variant="outline"
-                        className={`h-14 w-14 p-0 rounded-lg ${isWishlisted ? "bg-primary/10 border-primary text-primary" : "border-white/10"
+                        className={`h-14 w-14 p-0 rounded-lg ${product?.is_wishlisted ? "bg-primary/10 border-primary text-primary" : "border-white/10"
                             }`}
                     >
-                        <Heart className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`} />
+                        <Heart className={`w-5 h-5 ${product?.is_wishlisted ? "fill-current" : ""}`} />
                     </Button>
                 </div>
 
