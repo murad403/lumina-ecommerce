@@ -1,13 +1,13 @@
 "use client"
-import { ProductCard } from "@/components/product-card"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronDown, PackageOpen } from "lucide-react"
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { useGetProductsQuery } from "@/redux/features/user/product.api"
-import { TProduct } from "@/types/all"
-import { categoriesOptions, sortOptions, TCategory, TSortOption } from "@/lib/data"
+import { ProductCard } from "@/components/product-card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronDown, PackageOpen } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useGetProductsQuery } from "@/redux/features/user/product.api";
+import { TProduct } from "@/types/all";
+import { categoriesOptions, sortOptions, TCategory, TSortOption } from "@/lib/data";
 
 
 const ShopPage = () => {
