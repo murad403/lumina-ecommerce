@@ -1,9 +1,12 @@
+"use client";
 import { ProductCard } from '@/components/product-card'
 import { Button } from '@/components/ui/button'
+import { useGetProductsQuery } from '@/redux/features/user/product.api'
+import { TProduct } from '@/types/all'
 import Link from 'next/link'
-import React from 'react'
 
 const NewArrivals = () => {
+    const { data } = useGetProductsQuery({ search: "", category: "", min_price: undefined, max_price: undefined });
     return (
         <section className="py-32 bg-card/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-3xl -z-10" />
@@ -25,26 +28,11 @@ const NewArrivals = () => {
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <ProductCard
-                        id={1}
-                        name="Lumina Desk Lamp"
-                        price="$185.00"
-                        image="/luxury-minimalist-desk-lamp-modern-lighting.jpg"
-                        tag="New"
-                    />
-                    <ProductCard
-                        id={2}
-                        name="Minimal Leather Folio"
-                        price="$120.00"
-                        image="/minimalist-leather-folio-portfolio-black.jpg"
-                        tag="Limited"
-                    />
-                    <ProductCard
-                        id={3}
-                        name="Titanium Key Loop"
-                        price="$45.00"
-                        image="/luxury-minimalist-titanium-keychain-modern.jpg"
-                    />
+                    {
+                        data?.results?.slice(0, 3).map((product: TProduct) =>
+                            <ProductCard key={product?.id} product={product} />
+                        )
+                    }
                 </div>
             </div>
         </section>
