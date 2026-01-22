@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
 import MainWrapper from '@/components/wrapper/MainWrapper';
 import { getCurrentUser } from '@/utils/auth';
 import { AuthProvider } from '@/ContextProvider/AuthContext';

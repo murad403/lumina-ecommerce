@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Search, MessageSquare } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { useState, Suspense } from "react"
+import { useState } from "react"
 
 const faqs = [
   {

@@ -1,10 +1,6 @@
 "use client"
-
 import type React from "react"
-
 import { useState } from "react"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Package, Truck, CheckCircle, MapPin, Clock } from "lucide-react"

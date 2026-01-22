@@ -1,6 +1,5 @@
 "use client"
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
 import { resetPasswordValidation } from '@/validation/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
